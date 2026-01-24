@@ -5,14 +5,13 @@ importScripts(
   "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js",
 );
 
-firebase.initializeApp({
-  apiKey: "AIzaSyAAZPlPYMfl3Un6Q5keydrGfPhoErYh_tw",
-  authDomain: "bookexchange-188db.firebaseapp.com",
-  projectId: "bookexchange-188db",
-  storageBucket: "bookexchange-188db.firebasestorage.app",
-  messagingSenderId: "344459394812",
-  appId: "1:344459394812:web:29e675ff820469368b6179",
-});
+importScripts("/api/firebase-config");
+
+if (self.firebaseConfig) {
+  firebase.initializeApp(self.firebaseConfig);
+} else {
+  console.error("Firebase config not found in self.firebaseConfig");
+}
 
 const messaging = firebase.messaging();
 
