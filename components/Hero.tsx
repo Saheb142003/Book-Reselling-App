@@ -1,6 +1,39 @@
+"use client";
+
 import { Button } from './ui/Button';
+import { useEffect, useState } from 'react';
+import { Download } from 'lucide-react';
 
 export default function Hero() {
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+    const [isInstallable, setIsInstallable] = useState(false);
+
+    useEffect(() => {
+        const handler = (e: any) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+            setIsInstallable(true);
+        };
+
+        window.addEventListener("beforeinstallprompt", handler);
+
+        return () => {
+            window.removeEventListener("beforeinstallprompt", handler);
+        };
+    }, []);
+
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+
+        if (outcome === "accepted") {
+            setDeferredPrompt(null);
+            setIsInstallable(false);
+        }
+    };
+
     return (
         <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
             {/* Background Elements */}
@@ -29,6 +62,18 @@ export default function Hero() {
                     <Button variant="outline" size="lg" className="min-w-[180px]">
                         Explore Collection
                     </Button>
+                    
+                    {isInstallable && (
+                        <Button 
+                            onClick={handleInstallClick}
+                            variant="secondary" 
+                            size="lg" 
+                            className="min-w-[180px] gap-2 bg-green-600 text-white hover:bg-green-700 border-green-500"
+                        >
+                            <Download size={18} />
+                            Install App
+                        </Button>
+                    )}
                 </div>
 
                 {/* Stats */}

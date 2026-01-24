@@ -74,27 +74,36 @@ export default function ListBookForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto flex flex-col gap-6 p-8 rounded-2xl glass shadow-xl">
+            <div className="space-y-2">
+                <h2 className="text-2xl font-bold text-foreground">List a Book</h2>
+                <p className="text-muted-foreground text-sm">Share your book with the community.</p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {error && (
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+                    {error}
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium ml-1 text-gray-700">Title</label>
+                    <label className="text-sm font-medium ml-1 text-foreground">Title</label>
                     <input
                         type="text"
                         required
-                        className="bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-primary text-gray-900"
+                        className="bg-white/50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground placeholder:text-gray-400 transition-all"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="The Great Gatsby"
                     />
                 </div>
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium ml-1 text-gray-700">Author</label>
+                    <label className="text-sm font-medium ml-1 text-foreground">Author</label>
                     <input
                         type="text"
                         required
-                        className="bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-primary text-gray-900"
+                        className="bg-white/50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground placeholder:text-gray-400 transition-all"
                         value={author}
                         onChange={(e) => setAuthor(e.target.value)}
                         placeholder="F. Scott Fitzgerald"
@@ -103,39 +112,44 @@ export default function ListBookForm() {
             </div>
 
             <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium ml-1 text-gray-700">Description</label>
+                <label className="text-sm font-medium ml-1 text-foreground">Description</label>
                 <textarea
                     required
                     rows={4}
-                    className="bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-primary resize-none text-gray-900"
+                    className="bg-white/50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none text-foreground placeholder:text-gray-400 transition-all"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Briefly describe the book..."
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium ml-1 text-gray-700">Condition</label>
-                    <select
-                        className="bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-primary text-gray-900"
-                        value={condition}
-                        onChange={(e) => setCondition(e.target.value)}
-                    >
-                        <option value="New">New</option>
-                        <option value="Like New">Like New</option>
-                        <option value="Good">Good</option>
-                        <option value="Fair">Fair</option>
-                        <option value="Poor">Poor</option>
-                    </select>
+                    <label className="text-sm font-medium ml-1 text-foreground">Condition</label>
+                    <div className="relative">
+                        <select
+                            className="w-full bg-white/50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground appearance-none cursor-pointer transition-all"
+                            value={condition}
+                            onChange={(e) => setCondition(e.target.value)}
+                        >
+                            <option value="New">New</option>
+                            <option value="Like New">Like New</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                            <option value="Poor">Poor</option>
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium ml-1 text-gray-700">Book Cover</label>
+                    <label className="text-sm font-medium ml-1 text-foreground">Book Cover</label>
                     <div className="flex items-center gap-4">
-                        <label className="flex-grow cursor-pointer bg-gray-50 border border-gray-200 rounded-lg p-3 hover:bg-gray-100 transition-colors border-dashed text-center text-muted-foreground text-sm flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
-                            {coverFile ? coverFile.name : "Upload Image"}
+                        <label className="flex-grow cursor-pointer group bg-white/50 border border-gray-200 rounded-xl p-3 hover:bg-white/80 transition-all border-dashed text-center text-muted-foreground text-sm flex items-center justify-center gap-2 h-[50px]">
+                            <svg className="text-gray-400 group-hover:text-primary transition-colors" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
+                            <span className="truncate max-w-[150px]">{coverFile ? coverFile.name : "Upload Image"}</span>
                             <input
                                 type="file"
                                 accept="image/*"
@@ -144,24 +158,26 @@ export default function ListBookForm() {
                             />
                         </label>
                         {previewUrl && (
-                            <img src={previewUrl} alt="Preview" className="h-12 w-12 object-cover rounded border border-gray-200" />
+                            <div className="relative h-[50px] w-[40px] shrink-0 rounded overflow-hidden border border-gray-200 shadow-sm">
+                                <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
 
             <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium ml-1 text-gray-700">ISBN (Optional)</label>
+                <label className="text-sm font-medium ml-1 text-foreground">ISBN (Optional)</label>
                 <input
                     type="text"
-                    className="bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:border-primary text-gray-900"
+                    className="bg-white/50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground placeholder:text-gray-400 transition-all"
                     value={isbn}
                     onChange={(e) => setIsbn(e.target.value)}
                     placeholder="978-3-16-148410-0"
                 />
             </div>
 
-            <Button type="submit" className="mt-2 text-white shadow-sm" disabled={loading}>
+            <Button type="submit" className="mt-4 w-full py-6 text-lg font-medium shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all" disabled={loading}>
                 {loading ? "Listing Book..." : "List Book"}
             </Button>
         </form>
