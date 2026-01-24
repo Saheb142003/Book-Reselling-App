@@ -11,7 +11,7 @@ export default function BookCard({ book }: BookCardProps) {
         <div className="group relative overflow-hidden rounded-xl bg-white border border-gray-200 shadow-sm transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl hover:border-primary/20">
             <div className="aspect-[2/3] w-full overflow-hidden bg-gray-100 relative">
                 <Image
-                    src={book.coverUrl || "/placeholder-book.png"}
+                    src={book.coverUrl && book.coverUrl.startsWith('http') ? book.coverUrl : "https://placehold.co/400x600?text=No+Cover"}
                     alt={book.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"

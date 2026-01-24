@@ -319,7 +319,7 @@ export default function AdminDashboard() {
                                     <div key={book.id} className="bg-white border border-gray-200 shadow-sm rounded-xl p-6 flex flex-col lg:flex-row gap-6 items-start lg:items-center transition-all hover:shadow-md">
                                         <div className="h-24 w-16 relative flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden shadow-sm border border-gray-200">
                                             <Image
-                                                src={book.coverUrl || "/placeholder-book.png"}
+                                                src={book.coverUrl && book.coverUrl.startsWith('http') ? book.coverUrl : "https://placehold.co/400x600?text=No+Cover"}
                                                 alt={book.title}
                                                 fill
                                                 className="object-cover"

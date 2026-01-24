@@ -106,6 +106,16 @@ export default function Header() {
                                             My Exchanges
                                         </Link>
 
+                                        {user.role === 'admin' && (
+                                            <Link
+                                                href="/admin"
+                                                className="block px-4 py-2 text-sm text-yellow-400 hover:bg-white/10 transition-colors font-medium"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                            >
+                                                Admin Dashboard
+                                            </Link>
+                                        )}
+
                                         <div className="border-t border-white/10 mt-1 pt-1">
                                             <button
                                                 onClick={handleLogout}
