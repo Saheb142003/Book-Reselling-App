@@ -9,7 +9,9 @@ import {
     query,
     orderBy,
     Timestamp,
-    where
+    where,
+    deleteDoc,
+    updateDoc
 } from "firebase/firestore";
 
 const BOOKS_COLLECTION = "books";
@@ -90,6 +92,25 @@ export async function getBook(id: string) {
         }
     } catch (error) {
         console.error("Error fetching book:", error);
+        throw error;
+    }
+}
+
+export async function deleteBook(bookId: string) {
+    try {
+        await deleteDoc(doc(db, BOOKS_COLLECTION, bookId));
+    } catch (error) {
+        console.error("Error deleting book:", error);
+        throw error;
+    }
+}
+
+export async function updateBook(bookId: string, data: Partial<Book>) {
+    try {
+        const bookRef = doc(db, BOOKS_COLLECTION, bookId);
+        await updateDoc(bookRef, data);
+    } catch (error) {
+        console.error("Error updating book:", error);
         throw error;
     }
 }
