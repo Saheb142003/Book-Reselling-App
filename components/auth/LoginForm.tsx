@@ -51,6 +51,12 @@ export default function LoginForm() {
             } else {
                 router.push("/profile");
             }
+
+            // Show install alert
+            setTimeout(() => {
+                alert("Install the app for a better experience!");
+            }, 1000);
+
             // router.refresh(); // Removed to prevent race condition with push
 
         } catch (err) {
@@ -66,15 +72,15 @@ export default function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleLogin} className="flex flex-col gap-4 w-full max-w-sm mx-auto p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
-            <h2 className="text-2xl font-bold text-center mb-2">Welcome Back</h2>
-            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        <form onSubmit={handleLogin} className="flex flex-col gap-4 w-full max-w-sm mx-auto p-6 glass-nav border border-white/10 rounded-2xl shadow-xl">
+            <h2 className="text-2xl font-bold text-center mb-2 text-white">Welcome Back</h2>
+            {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
-            <div className="flex bg-black/20 p-1 rounded-lg">
+            <div className="flex bg-black/40 p-1 rounded-lg">
                 <button
                     type="button"
                     onClick={() => setRole("user")}
-                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${role === "user" ? "bg-primary text-white shadow" : "text-muted-foreground hover:text-white"
+                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${role === "user" ? "bg-primary text-white shadow" : "text-gray-400 hover:text-white"
                         }`}
                 >
                     User Login
@@ -82,7 +88,7 @@ export default function LoginForm() {
                 <button
                     type="button"
                     onClick={() => setRole("admin")}
-                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${role === "admin" ? "bg-primary text-white shadow" : "text-muted-foreground hover:text-white"
+                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${role === "admin" ? "bg-primary text-white shadow" : "text-gray-400 hover:text-white"
                         }`}
                 >
                     Admin Login
@@ -90,11 +96,11 @@ export default function LoginForm() {
             </div>
 
             <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium ml-1">Email</label>
+                <label className="text-sm font-medium ml-1 text-gray-200">Email</label>
                 <input
                     type="email"
                     required
-                    className="bg-black/20 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary transition-colors"
+                    className="bg-black/40 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary transition-colors text-white placeholder:text-gray-500"
                     placeholder="john@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -102,18 +108,18 @@ export default function LoginForm() {
             </div>
 
             <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium ml-1">Password</label>
+                <label className="text-sm font-medium ml-1 text-gray-200">Password</label>
                 <input
                     type="password"
                     required
-                    className="bg-black/20 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary transition-colors"
+                    className="bg-black/40 border border-white/10 rounded-lg p-3 focus:outline-none focus:border-primary transition-colors text-white placeholder:text-gray-500"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
 
-            <Button type="submit" className="mt-4" disabled={loading}>
+            <Button type="submit" className="mt-4 bg-primary text-white hover:bg-primary/90 border border-white/10" disabled={loading}>
                 {loading ? "Logging in..." : "Login"}
             </Button>
         </form>

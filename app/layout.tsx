@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#6366f1",
+  themeColor: "#2C3E50",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -29,6 +29,9 @@ export const viewport: Viewport = {
 import PageTransition from "@/components/PageTransition";
 
 // ... imports ...
+
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 export default function RootLayout({
   children,
@@ -45,6 +48,8 @@ export default function RootLayout({
           <PageTransition>
             {children}
           </PageTransition>
+          <PWAInstallPrompt />
+          <ServiceWorkerRegister />
         </AuthProvider>
       </body>
     </html>
