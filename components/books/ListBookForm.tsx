@@ -75,7 +75,7 @@ export default function ListBookForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto flex flex-col gap-6 p-8 rounded-2xl glass shadow-xl">
+        <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto flex flex-col gap-6 p-8 rounded-2xl glass shadow-xl">
             <div className="space-y-2">
                 <h2 className="text-2xl font-bold text-foreground">List a Book</h2>
                 <p className="text-muted-foreground text-sm">Share your book with the community.</p>
