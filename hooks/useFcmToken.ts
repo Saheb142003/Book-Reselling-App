@@ -25,10 +25,9 @@ const useFcmToken = () => {
             });
             if (currentToken) {
               setToken(currentToken);
-              console.log("FCM Token:", currentToken);
-              // TODO: Send this token to backend/firestore to associate with user
+              // Token retrieved
             } else {
-              console.log("No registration token available. Request permission to generate one.");
+              // No registration token available
             }
           }
         }

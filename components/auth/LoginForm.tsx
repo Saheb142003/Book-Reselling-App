@@ -28,22 +28,16 @@ export default function LoginForm() {
             const userRef = doc(db, "users", userCredential.user.uid);
             const userSnap = await getDoc(userRef);
 
-            console.log("Login Debug - User ID:", userCredential.user.uid);
-
             if (userSnap.exists()) {
                 const userData = userSnap.data();
-                console.log("Login Debug - Firestore Data:", userData);
                 
                 // Safe Role Check: Default to 'user' if missing
                 const userRole = userData.role || 'user';
                 
                 if (userRole !== role) {
-                    console.warn(`Role Mismatch: Expected ${role}, got ${userRole}`);
                     await signOut(auth);
                     throw new Error(`Access Denied: You are not an ${role === 'admin' ? 'Admin' : 'User'}.`);
                 }
-            } else {
-                console.warn("Login Debug - No Firestore document found for user.");
             }
 
             if (role === 'admin') {

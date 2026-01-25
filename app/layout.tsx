@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 import { AuthProvider } from "@/context/AuthContext";
 import { PWAProvider } from "@/context/PWAContext";
 
@@ -51,7 +52,9 @@ export default function RootLayout({
             <PageTransition>
               {children}
             </PageTransition>
-            <BottomNav />
+            <Suspense fallback={null}>
+              <BottomNav />
+            </Suspense>
             <PWAInstallPrompt />
             <ServiceWorkerRegister />
           </PWAProvider>

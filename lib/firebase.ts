@@ -12,13 +12,8 @@ const firebaseConfig = {
 };
 
 // Debug: Check if config is loaded
+// Debug: Check if config is loaded
 if (typeof window !== "undefined") {
-  console.log("Firebase Config Check:", {
-    apiKey: firebaseConfig.apiKey ? "Loaded" : "Missing",
-    projectId: firebaseConfig.projectId ? "Loaded" : "Missing",
-    authDomain: firebaseConfig.authDomain ? "Loaded" : "Missing",
-  });
-
   if (!firebaseConfig.apiKey) {
     console.error(
       "CRITICAL: Firebase API Key is missing! Check your .env.local file.",

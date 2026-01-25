@@ -157,7 +157,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // With real-time updates, manual refresh is mostly not needed.
     // We could implement a one-time fetch here if strictly necessary, 
     // but the snapshot listener handles updates automatically.
-    console.log("Profile is updated automatically via real-time listener.");
   };
 
   return (
