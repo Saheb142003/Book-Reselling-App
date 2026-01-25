@@ -44,6 +44,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     let authUnsubscribe: () => void;
 
     const initAuth = async () => {
+      if (typeof window === 'undefined') return;
+
       // 1. Try to load from cache immediately for instant UI
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
