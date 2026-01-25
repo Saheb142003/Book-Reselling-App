@@ -14,7 +14,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import BookCard from "@/components/books/BookCard";
 
-export default function SellerDashboard() {
+import { Suspense } from "react";
+
+function ExchangesContent() {
     const { user, loading } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -186,5 +188,19 @@ export default function SellerDashboard() {
                 </div>
             </main>
         </div>
+    );
+}
+
+export default function SellerDashboard() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-gray-50 flex flex-col">
+                <div className="flex-grow flex items-center justify-center pt-32">
+                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+                </div>
+            </div>
+        }>
+            <ExchangesContent />
+        </Suspense>
     );
 }

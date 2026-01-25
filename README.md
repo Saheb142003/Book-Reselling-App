@@ -1,5 +1,8 @@
 # Book Exchange App
 
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Saheb142003/Book-Reselling-App)
+[![Vercel](https://img.shields.io/badge/Vercel-Live%20Demo-000000?logo=vercel)](https://book-reselling-app.vercel.app)
+
 A modern, PWA-enabled platform for buying, selling, and exchanging used books. Built with Next.js, Firebase, and Tailwind CSS.
 
 ## Features

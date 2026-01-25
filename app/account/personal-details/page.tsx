@@ -81,8 +81,13 @@ export default function PersonalDetailsPage() {
 
     if (loading) return null;
 
-    if (!user) {
-        router.push("/login");
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login");
+        }
+    }, [user, loading, router]);
+
+    if (loading || !user) {
         return null;
     }
 

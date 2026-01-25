@@ -23,16 +23,21 @@ import { useState, useEffect } from "react";
 import { usePWA } from "@/context/PWAContext";
 
 export default function AccountPage() {
-    const { user, logout } = useAuth();
+    const { user, logout, loading } = useAuth();
     const router = useRouter();
     const { isInstallable, promptInstall } = usePWA();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login");
+        }
+    }, [user, loading, router]);
 
     const handleInstallClick = async () => {
         await promptInstall();
     };
 
-    if (!user) {
-        router.push("/login");
+    if (loading || !user) {
         return null;
     }
 
