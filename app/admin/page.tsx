@@ -339,10 +339,12 @@ export default function AdminDashboard() {
                                                 </span>
                                             </div>
                                             <p className="text-sm text-muted-foreground mb-2">Seller: <span className="font-medium text-gray-700">{book.sellerName}</span></p>
-                                            <div className="flex gap-4 text-xs text-muted-foreground">
+                                            <div className="flex gap-4 text-xs text-muted-foreground items-center">
                                                 <span>{book.condition}</span>
                                                 <span>•</span>
                                                 <span>{new Date(book.createdAt).toLocaleDateString()}</span>
+                                                <span>•</span>
+                                                <span className="font-bold text-primary">{book.credits} Credits</span>
                                             </div>
                                         </div>
 

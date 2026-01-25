@@ -181,3 +181,19 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
         throw error;
     }
 }
+
+export async function updateBookCredits(bookId: string, newCredits: number) {
+    try {
+        const bookRef = doc(db, BOOKS_COLLECTION, bookId);
+        await runTransaction(db, async (transaction) => {
+            const bookDoc = await transaction.get(bookRef);
+            if (!bookDoc.exists()) {
+                throw new Error("Book does not exist!");
+            }
+            transaction.update(bookRef, { credits: newCredits });
+        });
+    } catch (error) {
+        console.error("Error updating book credits:", error);
+        throw error;
+    }
+}

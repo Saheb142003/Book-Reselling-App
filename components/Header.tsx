@@ -38,6 +38,7 @@ export default function Header() {
                     Book<span className="text-accent">Exchange</span>
                 </Link>
 
+                {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-8">
                     <Link href="/browse" className="text-sm font-medium text-gray-200 hover:text-white transition-colors">
                         Explore Books
@@ -85,6 +86,21 @@ export default function Header() {
                                         </div>
 
                                         <Link
+                                            href="/browse"
+                                            className="block md:hidden px-4 py-2 text-sm text-gray-200 hover:bg-white/10 transition-colors"
+                                            onClick={() => setIsDropdownOpen(false)}
+                                        >
+                                            Explore Books
+                                        </Link>
+                                        <Link
+                                            href="/how-it-works"
+                                            className="block md:hidden px-4 py-2 text-sm text-gray-200 hover:bg-white/10 transition-colors"
+                                            onClick={() => setIsDropdownOpen(false)}
+                                        >
+                                            How it Works
+                                        </Link>
+
+                                        <Link
                                             href="/profile"
                                             className="block px-4 py-2 text-sm text-gray-200 hover:bg-white/10 transition-colors"
                                             onClick={() => setIsDropdownOpen(false)}
@@ -130,6 +146,13 @@ export default function Header() {
                         </div>
                     ) : (
                         <div className="flex items-center gap-4 animate-in fade-in duration-300">
+                             {/* Mobile Menu for Non-Auth Users */}
+                             <div className="md:hidden flex items-center gap-4">
+                                <Link href="/browse" className="text-sm font-medium text-gray-200 hover:text-white transition-colors">
+                                    Explore
+                                </Link>
+                             </div>
+
                             <Link href="/login">
                                 <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-white hover:bg-white/10 hover:text-white">
                                     Sign In
