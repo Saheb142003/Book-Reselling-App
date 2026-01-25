@@ -115,21 +115,20 @@ export async function rejectExchange(exchangeId: string) {
      throw new Error("Please use Instant Buy.");
 }
 
-// 4. Get User Exchanges
+// 4. Get User Exchanges (Transactions)
 export async function getUserExchanges(userId: string) {
-    // We need two queries: Requests I made, and Requests for my books
-    // Using simple separate queries
-
+    // Incoming = Sold books (I am the seller)
     const incomingQ = query(
-        collection(db, EXCHANGES_COLLECTION),
-        where("ownerId", "==", userId),
-        orderBy("createdAt", "desc")
+        collection(db, "transactions"),
+        where("sellerId", "==", userId),
+        orderBy("timestamp", "desc")
     );
 
+    // Outgoing = Purchased books (I am the buyer)
     const outgoingQ = query(
-        collection(db, EXCHANGES_COLLECTION),
-        where("requesterId", "==", userId),
-        orderBy("createdAt", "desc")
+        collection(db, "transactions"),
+        where("buyerId", "==", userId),
+        orderBy("timestamp", "desc")
     );
 
     const [incomingSnap, outgoingSnap] = await Promise.all([
@@ -140,8 +139,15 @@ export async function getUserExchanges(userId: string) {
     const mapDocs = (snap: any) => snap.docs.map((d: any) => ({
         id: d.id,
         ...d.data(),
-        createdAt: d.data().createdAt?.toDate(),
-        updatedAt: d.data().updatedAt?.toDate()
+        createdAt: d.data().timestamp?.toDate(), // Map timestamp to createdAt for compatibility
+        updatedAt: d.data().timestamp?.toDate(),
+        // Map transaction fields to Exchange type if needed, or ensure Exchange type matches
+        bookTitle: d.data().bookTitle,
+        bookCoverUrl: d.data().bookCoverUrl,
+        creditsCost: d.data().basePrice, // or buyerPaid
+        ownerName: d.data().sellerName,
+        requesterName: d.data().buyerName,
+        status: 'completed' // Transactions are always completed
     })) as Exchange[];
 
     return {

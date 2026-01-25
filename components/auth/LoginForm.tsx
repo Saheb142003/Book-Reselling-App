@@ -49,13 +49,8 @@ export default function LoginForm() {
             if (role === 'admin') {
                 router.push("/admin");
             } else {
-                router.push("/profile");
+                router.push("/");
             }
-
-            // Show install alert
-            setTimeout(() => {
-                alert("Install the app for a better experience!");
-            }, 1000);
 
             // router.refresh(); // Removed to prevent race condition with push
 

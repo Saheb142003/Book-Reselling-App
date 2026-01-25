@@ -6,7 +6,6 @@ import { getBook } from "@/lib/db/books";
 import { buyBookInstant } from "@/lib/db/exchanges";
 import { Book } from "@/types/book";
 import { useAuth } from "@/context/AuthContext";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
@@ -72,7 +71,6 @@ export default function BookDetailsPage() {
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-main flex flex-col">
-                <Header />
                 <div className="flex-grow flex items-center justify-center pt-32">
                     <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
                 </div>
@@ -83,7 +81,6 @@ export default function BookDetailsPage() {
     if (!book) {
         return (
             <div className="min-h-screen bg-gradient-main flex flex-col">
-                <Header />
                 <div className="flex-grow flex items-center justify-center pt-32 text-muted-foreground">
                     Book not found.
                 </div>
@@ -93,7 +90,6 @@ export default function BookDetailsPage() {
 
     return (
         <div className="min-h-screen bg-gradient-main flex flex-col">
-            <Header />
             <main className="flex-grow pt-32 pb-10 px-4 container mx-auto">
                 <div className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden max-w-4xl mx-auto flex flex-col md:flex-row">
                     {/* Image Section */}
@@ -163,7 +159,9 @@ export default function BookDetailsPage() {
                     </div>
                 </div>
             </main>
-            <Footer />
+            <div className="hidden md:block">
+                <Footer />
+            </div>
         </div>
     );
 }

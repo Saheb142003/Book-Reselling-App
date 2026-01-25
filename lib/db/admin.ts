@@ -46,8 +46,11 @@ export async function approveBook(bookId: string, sellerId: string, creditAmount
                 throw new Error("Seller does not exist!");
             }
 
-            // 1. Update Book Status
-            transaction.update(bookRef, { approvalStatus: "approved" });
+            // 1. Update Book Status & Credits
+            transaction.update(bookRef, { 
+                approvalStatus: "approved",
+                credits: creditAmount 
+            });
 
             // 2. Increment User Credits & Listed Count
             // Use the provided creditAmount

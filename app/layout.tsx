@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { PWAProvider } from "@/context/PWAContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ import PageTransition from "@/components/PageTransition";
 
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import BottomNav from "@/components/BottomNav";
 
 export default function RootLayout({
   children,
@@ -41,15 +43,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 md:pb-0`}
         suppressHydrationWarning
       >
         <AuthProvider>
-          <PageTransition>
-            {children}
-          </PageTransition>
-          <PWAInstallPrompt />
-          <ServiceWorkerRegister />
+          <PWAProvider>
+            <PageTransition>
+              {children}
+            </PageTransition>
+            <BottomNav />
+            <PWAInstallPrompt />
+            <ServiceWorkerRegister />
+          </PWAProvider>
         </AuthProvider>
       </body>
     </html>

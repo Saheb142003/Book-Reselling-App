@@ -5,7 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 import { getPendingBooks, getAllBooks, getAdminStats, getAdminTransactions, approveBook, rejectBook, getUsers, updateUserRole } from "@/lib/db/admin";
 import { Book } from "@/types/book";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -144,7 +143,7 @@ export default function AdminDashboard() {
 
     if (loading || isLoadingData) {
         return (
-            <div className="min-h-screen bg-gradient-main flex flex-col">
+            <div className="min-h-screen bg-gray-50 flex flex-col">
                 <Header />
                 <div className="flex-grow flex items-center justify-center pt-32">
                     <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
@@ -156,168 +155,135 @@ export default function AdminDashboard() {
     if (!user || user.role !== 'admin') return null;
 
     return (
-        <div className="min-h-screen bg-gradient-main flex flex-col">
+        <div className="min-h-screen bg-gray-50 flex flex-col pb-24">
             <Header />
-            <main className="flex-grow pt-32 pb-10 px-4 container mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <main className="flex-grow pt-24 px-4 container mx-auto max-w-5xl">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-                        <p className="text-muted-foreground">Manage books, users, and transactions.</p>
+                        <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                        <p className="text-sm text-gray-500">Overview of app activity</p>
                     </div>
-                    <Button onClick={fetchDashboardData} variant="outline" size="sm" className="bg-white hover:bg-gray-50">
+                    <Button onClick={fetchDashboardData} variant="outline" size="sm" className="bg-white hover:bg-gray-50 text-xs h-8">
                         Refresh Data
                     </Button>
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-6">
-                        <h3 className="text-muted-foreground text-sm uppercase tracking-wider">Total Users</h3>
-                        <p className="text-3xl font-bold mt-2 text-gray-900">{stats.totalUsers}</p>
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                    <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                        <h3 className="text-gray-500 text-[10px] uppercase tracking-wider font-bold mb-1">Users</h3>
+                        <p className="text-2xl font-black text-gray-900">{stats.totalUsers}</p>
                     </div>
-                    <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-6">
-                        <h3 className="text-muted-foreground text-sm uppercase tracking-wider">Total Books</h3>
-                        <p className="text-3xl font-bold mt-2 text-gray-900">{stats.totalBooks}</p>
+                    <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                        <h3 className="text-gray-500 text-[10px] uppercase tracking-wider font-bold mb-1">Books</h3>
+                        <p className="text-2xl font-black text-gray-900">{stats.totalBooks}</p>
                     </div>
-                    <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-6">
-                        <h3 className="text-muted-foreground text-sm uppercase tracking-wider">Total Transactions</h3>
-                        <p className="text-3xl font-bold mt-2 text-gray-900">{transactions.length}</p>
+                    <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                        <h3 className="text-gray-500 text-[10px] uppercase tracking-wider font-bold mb-1">Sales</h3>
+                        <p className="text-2xl font-black text-gray-900">{transactions.length}</p>
                     </div>
                 </div>
 
-                {/* Tabs & Search */}
-                <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between">
-                    <div className="flex bg-white p-1 rounded-lg border border-gray-200 shadow-sm self-start overflow-x-auto max-w-full">
-                        {(['pending', 'all', 'transactions', 'users'] as const).map((tab) => (
-                            <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap ${
-                                    activeTab === tab 
-                                    ? "bg-primary text-white shadow" 
-                                    : "text-muted-foreground hover:text-gray-900 hover:bg-gray-50"
-                                }`}
-                            >
-                                {tab === 'pending' ? 'Pending' : tab === 'all' ? 'All Books' : tab === 'transactions' ? 'Transactions' : 'Users'}
-                            </button>
-                        ))}
-                    </div>
+                {/* Tabs */}
+                <div className="flex overflow-x-auto pb-2 mb-4 gap-2 no-scrollbar">
+                    {(['pending', 'all', 'transactions', 'users'] as const).map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap border ${
+                                activeTab === tab 
+                                ? "bg-gray-900 text-white border-gray-900" 
+                                : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                            }`}
+                        >
+                            {tab === 'pending' ? 'Pending' : tab === 'all' ? 'All Books' : tab === 'transactions' ? 'Transactions' : 'Users'}
+                        </button>
+                    ))}
+                </div>
 
-                    {activeTab !== 'transactions' && (
+                {/* Search */}
+                {activeTab !== 'transactions' && (
+                    <div className="mb-6">
                         <input
                             type="text"
                             placeholder={activeTab === 'users' ? "Search users..." : "Search books..."}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white border border-gray-200 shadow-sm rounded-lg px-4 py-2 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full md:w-64 text-gray-900"
+                            className="w-full bg-white border border-gray-200 shadow-sm rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm"
                         />
-                    )}
-                </div>
+                    </div>
+                )}
 
                 {/* Content Area */}
                 <div className="space-y-4">
                     {activeTab === 'transactions' && (
-                        <div className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden overflow-x-auto">
-                            <table className="w-full text-left text-sm">
-                                <thead className="bg-gray-50 text-muted-foreground border-b border-gray-200">
-                                    <tr>
-                                        <th className="p-4 font-medium">Date</th>
-                                        <th className="p-4 font-medium">Book</th>
-                                        <th className="p-4 font-medium">Buyer</th>
-                                        <th className="p-4 font-medium">Seller</th>
-                                        <th className="p-4 font-medium">Price</th>
-                                        <th className="p-4 font-medium">Fee (10%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {transactions.map((tx) => (
-                                        <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="p-4 text-gray-600">
-                                                {tx.timestamp ? new Date(tx.timestamp).toLocaleDateString() : 'N/A'}
-                                            </td>
-                                            <td className="p-4 font-medium text-gray-900">{tx.bookTitle}</td>
-                                            <td className="p-4 text-gray-600">{tx.buyerName}</td>
-                                            <td className="p-4 text-gray-600">{tx.sellerName}</td>
-                                            <td className="p-4 font-bold text-gray-900">{tx.basePrice}</td>
-                                            <td className="p-4 font-bold text-green-600">+{tx.platformFee}</td>
-                                        </tr>
-                                    ))}
-                                    {transactions.length === 0 && (
-                                        <tr>
-                                            <td colSpan={6} className="p-8 text-center text-muted-foreground">No transactions yet.</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                        <div className="space-y-3">
+                            {transactions.map((tx) => (
+                                <div key={tx.id} className="bg-white border border-gray-200 shadow-sm rounded-xl p-4">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h4 className="font-bold text-gray-900 text-sm">{tx.bookTitle}</h4>
+                                            <p className="text-xs text-gray-500">{new Date(tx.timestamp).toLocaleDateString()}</p>
+                                        </div>
+                                        <span className="text-green-600 font-bold text-sm">+{tx.platformFee} Credits</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                                        <span>From: <span className="font-medium">{tx.sellerName}</span></span>
+                                        <span>To: <span className="font-medium">{tx.buyerName}</span></span>
+                                    </div>
+                                </div>
+                            ))}
+                            {transactions.length === 0 && (
+                                <div className="text-center py-10 text-gray-400 text-sm">No transactions yet.</div>
+                            )}
                         </div>
                     )}
 
                     {activeTab === 'users' && (
-                        <div className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden overflow-x-auto">
-                            <table className="w-full text-left text-sm">
-                                <thead className="bg-gray-50 text-muted-foreground border-b border-gray-200">
-                                    <tr>
-                                        <th className="p-4 font-medium">User</th>
-                                        <th className="p-4 font-medium">Email</th>
-                                        <th className="p-4 font-medium">Role</th>
-                                        <th className="p-4 font-medium">Credits</th>
-                                        <th className="p-4 font-medium">Joined</th>
-                                        <th className="p-4 font-medium">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {filteredUsers.map((u) => (
-                                        <tr key={u.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="p-4 font-medium text-gray-900 flex items-center gap-2">
-                                                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
-                                                    {u.displayName?.[0]?.toUpperCase() || 'U'}
-                                                </div>
-                                                {u.displayName || 'Unknown'}
-                                            </td>
-                                            <td className="p-4 text-gray-600">{u.email}</td>
-                                            <td className="p-4">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                    u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'
+                        <div className="space-y-3">
+                            {filteredUsers.map((u) => (
+                                <div key={u.id} className="bg-white border border-gray-200 shadow-sm rounded-xl p-4 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">
+                                            {u.displayName?.[0]?.toUpperCase() || 'U'}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-gray-900 text-sm">{u.displayName || 'Unknown'}</h4>
+                                            <p className="text-xs text-gray-500">{u.email}</p>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium ${
+                                                    u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'
                                                 }`}>
                                                     {u.role || 'user'}
                                                 </span>
-                                            </td>
-                                            <td className="p-4 font-bold text-gray-900">{u.credits || 0}</td>
-                                            <td className="p-4 text-gray-600">
-                                                {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}
-                                            </td>
-                                            <td className="p-4">
-                                                <Button 
-                                                    onClick={() => handleRoleChange(u.id, u.role || 'user')} 
-                                                    variant="outline" 
-                                                    size="sm"
-                                                    className="text-xs h-8"
-                                                >
-                                                    {u.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {filteredUsers.length === 0 && (
-                                        <tr>
-                                            <td colSpan={6} className="p-8 text-center text-muted-foreground">No users found.</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                                                <span className="text-[10px] text-gray-400">• {u.credits || 0} Credits</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <Button 
+                                        onClick={() => handleRoleChange(u.id, u.role || 'user')} 
+                                        variant="ghost" 
+                                        size="sm"
+                                        className="text-xs h-8 px-2 text-primary hover:bg-primary/5"
+                                    >
+                                        {u.role === 'admin' ? 'Demote' : 'Promote'}
+                                    </Button>
+                                </div>
+                            ))}
+                            {filteredUsers.length === 0 && (
+                                <div className="text-center py-10 text-gray-400 text-sm">No users found.</div>
+                            )}
                         </div>
                     )}
 
                     {(activeTab === 'pending' || activeTab === 'all') && (
-                        <div className="grid gap-4">
+                        <div className="space-y-4">
                             {filteredBooks.length === 0 ? (
-                                <div className="p-10 text-center text-muted-foreground bg-white border border-gray-200 shadow-sm rounded-xl">
-                                    No books found.
-                                </div>
+                                <div className="text-center py-10 text-gray-400 text-sm">No books found.</div>
                             ) : (
                                 filteredBooks.map((book) => (
-                                    <div key={book.id} className="bg-white border border-gray-200 shadow-sm rounded-xl p-6 flex flex-col lg:flex-row gap-6 items-start lg:items-center transition-all hover:shadow-md">
-                                        <div className="h-24 w-16 relative flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                    <div key={book.id} className="bg-white border border-gray-200 shadow-sm rounded-xl p-4 flex gap-4">
+                                        <div className="h-24 w-16 relative flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden border border-gray-100">
                                             <Image
                                                 src={book.coverUrl && book.coverUrl.startsWith('http') ? book.coverUrl : "https://placehold.co/400x600?text=No+Cover"}
                                                 alt={book.title}
@@ -327,49 +293,42 @@ export default function AdminDashboard() {
                                             />
                                         </div>
 
-                                        <div className="flex-grow min-w-0">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="font-bold text-lg text-gray-900 truncate">{book.title}</h3>
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
-                                                    book.approvalStatus === 'approved' ? 'border-green-200 text-green-700 bg-green-50' :
-                                                    book.approvalStatus === 'rejected' ? 'border-red-200 text-red-700 bg-red-50' :
-                                                    'border-yellow-200 text-yellow-700 bg-yellow-50'
-                                                }`}>
-                                                    {book.approvalStatus?.toUpperCase()}
-                                                </span>
-                                            </div>
-                                            <p className="text-sm text-muted-foreground mb-2">Seller: <span className="font-medium text-gray-700">{book.sellerName}</span></p>
-                                            <div className="flex gap-4 text-xs text-muted-foreground items-center">
-                                                <span>{book.condition}</span>
-                                                <span>•</span>
-                                                <span>{new Date(book.createdAt).toLocaleDateString()}</span>
-                                                <span>•</span>
-                                                <span className="font-bold text-primary">{book.credits} Credits</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Actions only for Pending Tab */}
-                                        {activeTab === 'pending' && (
-                                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0 w-full lg:w-auto bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                                <div className="flex flex-col">
-                                                    <label className="text-[10px] uppercase text-muted-foreground tracking-wider mb-1">Assign Credits</label>
-                                                    <input
-                                                        type="number"
-                                                        min="1"
-                                                        max="100"
-                                                        value={creditInputs[book.id!] || 1}
-                                                        onChange={(e) => setCreditInputs(prev => ({ ...prev, [book.id!]: parseInt(e.target.value) || 0 }))}
-                                                        className="w-24 bg-white border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-center font-bold text-gray-900"
-                                                    />
+                                        <div className="flex-grow min-w-0 flex flex-col justify-between">
+                                            <div>
+                                                <div className="flex justify-between items-start">
+                                                    <h3 className="font-bold text-sm text-gray-900 line-clamp-2 leading-tight mb-1">{book.title}</h3>
+                                                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0 ml-2 ${
+                                                        book.approvalStatus === 'approved' ? 'bg-green-100 text-green-700' :
+                                                        book.approvalStatus === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                        'bg-yellow-100 text-yellow-700'
+                                                    }`}>
+                                                        {book.approvalStatus?.toUpperCase()}
+                                                    </span>
                                                 </div>
-                                                <Button onClick={() => handleApprove(book)} className="bg-green-600 hover:bg-green-700 text-white h-full shadow-sm">
-                                                    Approve
-                                                </Button>
-                                                <Button onClick={() => handleReject(book.id)} variant="outline" className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50 h-full">
-                                                    Reject
-                                                </Button>
+                                                <p className="text-xs text-gray-500 mb-2">by {book.sellerName}</p>
                                             </div>
-                                        )}
+
+                                            {activeTab === 'pending' && (
+                                                <div className="flex items-center gap-2 mt-2">
+                                                    <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden h-8">
+                                                        <input
+                                                            type="number"
+                                                            min="1"
+                                                            max="100"
+                                                            value={creditInputs[book.id!] || 1}
+                                                            onChange={(e) => setCreditInputs(prev => ({ ...prev, [book.id!]: parseInt(e.target.value) || 0 }))}
+                                                            className="w-10 text-center text-xs font-bold focus:outline-none h-full"
+                                                        />
+                                                    </div>
+                                                    <Button onClick={() => handleApprove(book)} size="sm" className="h-8 text-xs bg-green-600 hover:bg-green-700 flex-grow">
+                                                        Approve
+                                                    </Button>
+                                                    <Button onClick={() => handleReject(book.id)} size="sm" variant="outline" className="h-8 text-xs text-red-600 border-red-200 hover:bg-red-50 w-8 p-0 flex items-center justify-center">
+                                                        ✕
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 ))
                             )}
@@ -377,7 +336,6 @@ export default function AdminDashboard() {
                     )}
                 </div>
             </main>
-            <Footer />
         </div>
     );
 }

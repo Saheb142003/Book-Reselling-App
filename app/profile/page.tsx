@@ -22,10 +22,9 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-gradient-main flex flex-col">
             <Header />
-            <main className="flex-grow pt-32 pb-10 px-4 container mx-auto">
+            <main className="flex-grow pt-24 pb-10 px-4 container mx-auto">
                 <UserProfile />
             </main>
-            <Footer />
         </div>
     );
 }

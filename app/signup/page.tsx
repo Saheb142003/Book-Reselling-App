@@ -1,12 +1,10 @@
 import SignUpForm from "@/components/auth/SignUpForm";
 import Link from "next/link";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function SignUpPage() {
     return (
         <div className="min-h-screen bg-gradient-main flex flex-col">
-            <Header />
             <main className="flex-grow flex items-center justify-center pt-24 pb-10 px-4">
                 <div className="w-full max-w-md">
                     <SignUpForm />
@@ -18,7 +16,9 @@ export default function SignUpPage() {
                     </p>
                 </div>
             </main>
-            <Footer />
+            <div className="hidden md:block">
+                <Footer />
+            </div>
         </div>
     );
 }

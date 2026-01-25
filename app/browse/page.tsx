@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BookCard from "@/components/books/BookCard";
 import { getBooks } from "@/lib/db/books";
@@ -29,7 +28,6 @@ export default function BrowsePage() {
 
     return (
         <div className="min-h-screen bg-gradient-main flex flex-col">
-            <Header />
             <main className="flex-grow pt-32 pb-10 px-4 container mx-auto">
                 <div className="flex justify-between items-end mb-8">
                     <div>
@@ -41,13 +39,13 @@ export default function BrowsePage() {
                 </div>
 
                 {loading ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                            <div key={i} className="h-96 bg-white/5 rounded-xl border border-white/10 animate-pulse"></div>
+                            <div key={i} className="h-64 md:h-96 bg-white/5 rounded-xl border border-white/10 animate-pulse"></div>
                         ))}
                     </div>
                 ) : books.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                         {books.map((book) => (
                             <BookCard key={book.id} book={book} />
                         ))}
@@ -62,7 +60,6 @@ export default function BrowsePage() {
                     </div>
                 )}
             </main>
-            <Footer />
         </div>
     );
 }

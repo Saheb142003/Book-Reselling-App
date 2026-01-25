@@ -12,3 +12,10 @@ export interface UserProfile {
     location?: string;
     phoneNumber?: string;
 }
+
+export interface Address {
+    id: string;
+    label: string; // e.g., "Home", "Work"
+    address: string;
+    isDefault: boolean;
+}

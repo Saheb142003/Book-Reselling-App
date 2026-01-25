@@ -47,7 +47,7 @@ export default function SignUpForm() {
             await refreshProfile();
 
             // 5. Redirect
-            router.push("/profile");
+            router.push("/");
         } catch (err) {
             console.error(err);
             // Handle Firebase Errors safely

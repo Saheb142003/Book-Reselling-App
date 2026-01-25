@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   onAuthStateChanged,
   User as FirebaseUser,
@@ -35,59 +35,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Initialize FCM
   useFcmToken();
 
+  // Use ref for the profile subscription to avoid stale closures in useEffect
+  const unsubscribeProfileRef = useRef<(() => void) | null>(null);
+
   const CACHE_KEY = "auth_user_cache";
 
-  const fetchUserProfile = async (firebaseUser: FirebaseUser) => {
-    try {
-      const userRef = doc(db, "users", firebaseUser.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        // Convert Firestore Timestamp to JS Date
-        let createdAt = new Date();
-        if (userData.createdAt) {
-          createdAt = userData.createdAt.toDate
-            ? userData.createdAt.toDate()
-            : new Date(userData.createdAt);
-        }
-
-        const profile: UserProfile = {
-          ...userData,
-          createdAt: createdAt,
-        } as UserProfile;
-
-        setUser(profile);
-        localStorage.setItem(CACHE_KEY, JSON.stringify(profile));
-      } else {
-        console.warn("User document not found for", firebaseUser.uid);
-        // Basic fall back
-        const basicProfile = {
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL,
-          role: "user",
-          credits: 0,
-          booksListed: 0,
-          booksSold: 0,
-          createdAt: new Date(),
-        } as UserProfile; // Cast to ensure compatibility if types slightly differ
-        setUser(basicProfile);
-        // Don't cache incomplete profiles potentially
-      }
-    } catch (error: any) {
-      // Silence offline errors completely as requested
-      const isOffline =
-        error?.code === "unavailable" || error?.message?.includes("offline");
-      if (!isOffline) {
-        console.error("Error fetching user profile:", error);
-      }
-    }
-  };
-
   useEffect(() => {
-    let unsubscribe: () => void;
+    let authUnsubscribe: () => void;
 
     const initAuth = async () => {
       // 1. Try to load from cache immediately for instant UI
@@ -95,10 +49,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
-          // Restore Date object
           if (parsed.createdAt) parsed.createdAt = new Date(parsed.createdAt);
           setUser(parsed);
-          setLoading(false); // <--- FIX: Enable optimistic UI immediately
+          setLoading(false);
         } catch (e) {
           console.error("Cache parse error", e);
           localStorage.removeItem(CACHE_KEY);
@@ -106,36 +59,90 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       // 2. Listen for Firebase Auth changes
-      unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      authUnsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
-          // setLoading(true); // Removed to prevent flicker if cache is loaded
-          // User is signed in
-          // If we have a cached user and IDs match, we can keep showing it while we revalidate
-          // If no cache, we wait for fetch
-
+          // User is signed in - Set up real-time listener for profile
           try {
-            await fetchUserProfile(firebaseUser);
+            const userRef = doc(db, "users", firebaseUser.uid);
+            
+            // Unsubscribe from previous listener if exists
+            if (unsubscribeProfileRef.current) {
+                unsubscribeProfileRef.current();
+                unsubscribeProfileRef.current = null;
+            }
+
+            // Dynamically import onSnapshot to avoid SSR issues if any (though we are in use client)
+            const { onSnapshot } = await import("firebase/firestore");
+            
+            const unsub = onSnapshot(userRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    let createdAt = new Date();
+                    if (userData.createdAt) {
+                        createdAt = userData.createdAt.toDate
+                            ? userData.createdAt.toDate()
+                            : new Date(userData.createdAt);
+                    }
+
+                    const profile: UserProfile = {
+                        ...userData,
+                        createdAt: createdAt,
+                    } as UserProfile;
+
+                    setUser(profile);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(profile));
+                } else {
+                    // Fallback if no profile doc
+                    const basicProfile = {
+                        uid: firebaseUser.uid,
+                        email: firebaseUser.email,
+                        displayName: firebaseUser.displayName,
+                        photoURL: firebaseUser.photoURL,
+                        role: "user",
+                        credits: 0,
+                        booksListed: 0,
+                        booksSold: 0,
+                        createdAt: new Date(),
+                    } as UserProfile;
+                    setUser(basicProfile);
+                }
+                setLoading(false);
+            }, (error) => {
+                console.error("Profile snapshot error:", error);
+            });
+            
+            unsubscribeProfileRef.current = unsub;
+
           } catch (err) {
-            console.error("Auth state change error", err);
+            console.error("Auth setup error", err);
           }
         } else {
           // User is signed out
+          if (unsubscribeProfileRef.current) {
+              unsubscribeProfileRef.current();
+              unsubscribeProfileRef.current = null;
+          }
           setUser(null);
           localStorage.removeItem(CACHE_KEY);
+          setLoading(false);
         }
-        setLoading(false); // Auth check complete
       });
     };
 
     initAuth();
 
     return () => {
-      if (unsubscribe) unsubscribe();
+      if (authUnsubscribe) authUnsubscribe();
+      if (unsubscribeProfileRef.current) unsubscribeProfileRef.current();
     };
   }, []);
 
   const logout = async () => {
     try {
+      if (unsubscribeProfileRef.current) {
+          unsubscribeProfileRef.current();
+          unsubscribeProfileRef.current = null;
+      }
       await firebaseSignOut(auth);
       localStorage.removeItem(CACHE_KEY);
       setUser(null);
@@ -145,9 +152,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const refreshProfile = async () => {
-    if (auth.currentUser) {
-      await fetchUserProfile(auth.currentUser);
-    }
+    // With real-time updates, manual refresh is mostly not needed.
+    // We could implement a one-time fetch here if strictly necessary, 
+    // but the snapshot listener handles updates automatically.
+    console.log("Profile is updated automatically via real-time listener.");
   };
 
   return (
