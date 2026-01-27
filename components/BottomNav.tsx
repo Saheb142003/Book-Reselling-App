@@ -27,9 +27,9 @@ export default function BottomNav() {
     },
     {
       label: "Explore",
-      href: "/browse",
+      href: "/explore",
       icon: Compass,
-      active: pathname === "/browse",
+      active: pathname === "/explore",
     },
     {
       label: "Dashboard",
@@ -38,17 +38,17 @@ export default function BottomNav() {
       active: pathname === "/exchanges",
     },
     {
-      label: "Account",
-      href: "/account",
+      label: "Profile",
+      href: "/profile",
       icon: Menu,
-      active: pathname === "/account",
+      active: pathname === "/profile",
     },
   ];
 
   if (!user) return null;
   
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a252f]/95 backdrop-blur-md border-t border-white/10 md:hidden pb-safe">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border md:hidden pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
       <div className="flex items-center justify-around h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -57,7 +57,7 @@ export default function BottomNav() {
               key={item.label}
               href={item.href}
               className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${
-                item.active ? "text-primary" : "text-gray-400 hover:text-gray-200"
+                item.active ? "text-primary" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Icon size={20} strokeWidth={item.active ? 2.5 : 2} />

@@ -4,12 +4,27 @@ import Link from 'next/link';
 import { Button } from './ui/Button';
 import { useAuth } from '@/context/AuthContext';
 import { useEffect, useState, useRef } from 'react';
+import { usePathname } from 'next/navigation';
+import { 
+    Home, 
+    Compass, 
+    PlusCircle, 
+    LayoutDashboard, 
+    User, 
+    LogOut, 
+    Settings, 
+    ShoppingBag,
+    Wallet
+} from 'lucide-react';
 
 export default function Header() {
     const { user, loading, logout } = useAuth();
     const [mounted, setMounted] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(true);
+    const lastScrollY = useRef(0);
+    const pathname = usePathname();
 
     useEffect(() => {
         setMounted(true);
@@ -21,8 +36,23 @@ export default function Header() {
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
+
+        // Scroll listener for mobile hide/show
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+                setIsVisible(false); // Scrolling down
+            } else {
+                setIsVisible(true); // Scrolling up
+            }
+            lastScrollY.current = currentScrollY;
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
@@ -31,44 +61,74 @@ export default function Header() {
         setIsDropdownOpen(false);
     };
 
+    const navLinks = [
+        { name: 'Home', href: '/', icon: Home },
+        { name: 'Explore', href: '/explore', icon: Compass },
+        { name: 'Sell', href: '/sell', icon: PlusCircle },
+    ];
+
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300 border-b border-white/5">
-            <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
-                <Link href="/" className="text-xl md:text-2xl font-bold tracking-tighter text-white flex items-center gap-2">
-                    {/* Mobile Logo Icon could go here if needed */}
-                    <span>Book<span className="text-accent">Exchange</span></span>
+        <header 
+            className={`fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border transition-all duration-300 shadow-sm
+                ${isVisible ? 'translate-y-0' : '-translate-y-full md:translate-y-0'}
+            `}
+        >
+            <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+                {/* Logo */}
+                <Link href="/" className="text-xl md:text-2xl font-bold tracking-tighter text-foreground flex items-center gap-2">
+                    <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">BookExchange</span>
                 </Link>
 
-                {/* Desktop Nav */}
-                {user && (
-                    <nav className="hidden md:flex items-center gap-8">
-                        <Link href="/browse" className="text-sm font-medium text-gray-200 hover:text-white transition-colors">
-                            Explore Books
+                {/* Desktop Navigation */}
+                <nav className="hidden md:flex items-center gap-1">
+                    {navLinks.map((link) => {
+                        const Icon = link.icon;
+                        const isActive = pathname === link.href;
+                        return (
+                            <Link 
+                                key={link.name} 
+                                href={link.href}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2
+                                    ${isActive 
+                                        ? 'bg-primary/10 text-primary' 
+                                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                                    }
+                                `}
+                            >
+                                <Icon size={16} />
+                                {link.name}
+                            </Link>
+                        );
+                    })}
+                    {user?.role === 'admin' && (
+                        <Link 
+                            href="/admin"
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2
+                                ${pathname.startsWith('/admin')
+                                    ? 'bg-yellow-500/10 text-yellow-600' 
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                                }
+                            `}
+                        >
+                            <LayoutDashboard size={16} />
+                            Admin
                         </Link>
-                        <Link href="/how-it-works" className="text-sm font-medium text-gray-200 hover:text-white transition-colors">
-                            How it Works
-                        </Link>
-                    </nav>
-                )}
+                    )}
+                </nav>
 
+                {/* User Section */}
                 <div className="flex items-center gap-4">
                     {!mounted || loading ? (
-                        // Skeleton Loader for User Section
+                        // Skeleton Loader
                         <div className="flex items-center gap-4 animate-pulse">
-                            <div className="h-9 w-20 bg-white/10 rounded-md hidden sm:block"></div>
-                            <div className="h-8 w-8 md:h-9 md:w-9 rounded-full bg-white/10"></div>
+                            <div className="h-9 w-20 bg-muted/20 rounded-md hidden sm:block"></div>
+                            <div className="h-8 w-8 md:h-9 md:w-9 rounded-full bg-muted/20"></div>
                         </div>
                     ) : user ? (
                         <div className="flex items-center gap-4 animate-in fade-in duration-300">
-                            <Link href="/sell" className="hidden md:block">
-                                <Button size="sm" variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                                    Sell Book
-                                </Button>
-                            </Link>
-
-                            {/* User Profile Pic - Visible on Mobile now */}
+                            {/* Mobile Profile Icon */}
                             <Link href="/profile" className="md:hidden">
-                                <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white border border-white/20">
+                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary border border-primary/20">
                                     {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}
                                 </div>
                             </Link>
@@ -77,61 +137,65 @@ export default function Header() {
                             <div className="relative hidden md:block" ref={dropdownRef}>
                                 <button
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                    className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
+                                    className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none group"
                                 >
-                                    <div className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold text-white border border-white/20">
+                                    <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary border border-primary/20 group-hover:shadow-md transition-all">
                                         {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}
                                     </div>
-                                    <span className="text-sm font-medium text-white">
+                                    <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                                         {user.displayName?.split(' ')[0]}
                                     </span>
                                 </button>
 
                                 {isDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-56 rounded-xl bg-[#1a252f] border border-white/10 shadow-xl py-1 animate-in fade-in zoom-in-95 duration-200 z-[100] origin-top-right">
-                                        <div className="px-4 py-3 border-b border-white/10 bg-white/5">
-                                            <p className="text-xs text-gray-400 mb-1">Signed in as</p>
-                                            <p className="text-sm font-semibold truncate text-white">{user.displayName || "User"}</p>
-                                            <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                                    <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-card border border-border shadow-xl py-2 animate-in fade-in zoom-in-95 duration-200 z-[100] origin-top-right ring-1 ring-black/5">
+                                        <div className="px-4 py-3 border-b border-border/50 bg-muted/30">
+                                            <p className="text-xs text-muted-foreground mb-1 font-medium uppercase tracking-wider">Signed in as</p>
+                                            <p className="text-sm font-semibold truncate text-foreground">{user.displayName || "User"}</p>
+                                            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                                         </div>
 
-                                        <Link
-                                            href="/profile"
-                                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-white/10 transition-colors"
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            My Profile
-                                        </Link>
-                                        <Link
-                                            href="/sell"
-                                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-white/10 transition-colors"
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            List a Book
-                                        </Link>
-                                        <Link
-                                            href="/exchanges"
-                                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-white/10 transition-colors"
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            My Exchanges
-                                        </Link>
-
-                                        {user.role === 'admin' && (
+                                        <div className="py-2">
                                             <Link
-                                                href="/admin"
-                                                className="block px-4 py-2 text-sm text-yellow-400 hover:bg-white/10 transition-colors font-medium"
+                                                href="/account"
+                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
                                                 onClick={() => setIsDropdownOpen(false)}
                                             >
-                                                Admin Dashboard
+                                                <User size={16} />
+                                                My Account
                                             </Link>
-                                        )}
+                                            <Link
+                                                href="/sell"
+                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                            >
+                                                <PlusCircle size={16} />
+                                                List a Book
+                                            </Link>
+                                            <Link
+                                                href="/exchanges"
+                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                            >
+                                                <ShoppingBag size={16} />
+                                                My Exchanges
+                                            </Link>
+                                            <Link
+                                                href="/wallet"
+                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                            >
+                                                <Wallet size={16} />
+                                                Wallet & Credits
+                                            </Link>
+                                        </div>
 
-                                        <div className="border-t border-white/10 mt-1 pt-1">
+                                        <div className="border-t border-border/50 mt-1 pt-1">
                                             <button
                                                 onClick={handleLogout}
-                                                className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                                                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
                                             >
+                                                <LogOut size={16} />
                                                 Sign Out
                                             </button>
                                         </div>
@@ -142,12 +206,12 @@ export default function Header() {
                     ) : (
                         <div className="flex items-center gap-3 animate-in fade-in duration-300">
                             <Link href="/login">
-                                <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white h-8 px-3 text-xs md:text-sm md:h-9 md:px-4">
+                                <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted/50 hover:text-primary transition-colors h-9 px-4 font-medium">
                                     Sign In
                                 </Button>
                             </Link>
                             <Link href="/signup">
-                                <Button size="sm" className="shadow-sm bg-primary text-white hover:bg-primary/90 border border-white/10 h-8 px-3 text-xs md:text-sm md:h-9 md:px-4">
+                                <Button size="sm" className="shadow-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-5 font-medium rounded-full transition-all hover:shadow-lg hover:-translate-y-0.5">
                                     Get Started
                                 </Button>
                             </Link>

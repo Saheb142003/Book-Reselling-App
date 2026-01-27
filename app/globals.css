@@ -1,22 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ecf0f1; /* Off-white */
-  --foreground: #1a252f; /* Darker Deep Indigo/Slate for better contrast */
+  --background: #f0f2f5; /* Cool Light Gray */
+  --foreground: #1e293b; /* Slate 800 */
 
-  --primary: #2c3e50; /* Deep Indigo */
+  --primary: #2563eb; /* Royal Blue */
   --primary-foreground: #ffffff;
 
-  --secondary: #27ae60; /* Emerald Green */
+  --secondary: #3b82f6; /* Lighter Blue */
   --secondary-foreground: #ffffff;
 
-  --accent: #f39c12; /* Amber Gold */
+  --accent: #f59e0b; /* Amber */
   --accent-foreground: #ffffff;
 
-  --muted: #bdc3c7; /* Light Gray */
-  --muted-foreground: #57606f; /* Darker Slate Gray for better readability */
+  --muted: #f1f5f9; /* Slate 100 */
+  --muted-foreground: #64748b; /* Slate 500 */
 
-  --border: #bdc3c7;
+  --card: #ffffff; /* Pure White */
+  --card-foreground: #1e293b;
+
+  --border: #e2e8f0; /* Slate 200 */
+  --input: #ffffff;
+  --ring: #2563eb;
+
+  --success: #10b981; /* Emerald */
 
   --font-sans: var(--font-geist-sans);
 }
@@ -32,7 +39,12 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
   --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
 
   --font-sans: var(--font-sans);
 }
@@ -45,21 +57,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+html {
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
+/* Glassmorphism Utilities */
 /* Glassmorphism Utilities */
 .glass {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.7); /* Light surface */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .glass-nav {
-  background: rgba(44, 62, 80, 0.85); /* Darker glass for nav */
+  background: rgba(255, 255, 255, 0.85); /* Light nav background */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  color: var(--foreground);
 }
 
 .text-gradient {
@@ -75,4 +95,9 @@ body {
     var(--background) 0%,
     var(--foreground) 100%
   );
+}
+@layer utilities {
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
 }

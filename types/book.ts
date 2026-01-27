@@ -8,6 +8,7 @@ export interface Book {
     price?: number; // Deprecated, use credits
     credits: number;
     condition: 'New' | 'Like New' | 'Good' | 'Fair' | 'Poor';
+    genre?: string;
     coverUrl: string;
     publishedDate?: string;
     createdAt: Date; // Firestore Timestamp converted to Date

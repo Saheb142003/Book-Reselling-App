@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import ListBookForm from "@/components/books/ListBookForm";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+
 
 export default function SellPage() {
     const { user, loading } = useAuth();
@@ -25,7 +25,7 @@ export default function SellPage() {
             <main className="flex-grow pt-32 pb-10 px-4 container mx-auto">
                 <ListBookForm />
             </main>
-            <Footer />
+
         </div>
     );
 }

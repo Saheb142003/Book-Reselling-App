@@ -17,6 +17,7 @@ export default function ListBookForm() {
     const [author, setAuthor] = useState("");
     const [description, setDescription] = useState("");
     const [condition, setCondition] = useState("Good");
+    const [genre, setGenre] = useState("Fiction");
 
     // Changing coverUrl string to file state
     const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -58,6 +59,7 @@ export default function ListBookForm() {
                 credits: 0, // Admin assigns credits
                 price: 0, // Deprecated
                 condition: condition as any,
+                genre,
                 coverUrl: finalCoverUrl || "https://placehold.co/400x600?text=No+Cover", // Default
                 status: 'available',
                 approvalStatus: 'pending' // Admin must approve
@@ -138,6 +140,33 @@ export default function ListBookForm() {
                             <option value="Good">Good</option>
                             <option value="Fair">Fair</option>
                             <option value="Poor">Poor</option>
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium ml-1 text-foreground">Genre</label>
+                    <div className="relative">
+                        <select
+                            className="w-full bg-white/50 border border-gray-200 rounded-xl p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground appearance-none cursor-pointer transition-all"
+                            value={genre}
+                            onChange={(e) => setGenre(e.target.value)}
+                        >
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Sci-Fi">Sci-Fi</option>
+                            <option value="Mystery">Mystery</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Thriller">Thriller</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Biography">Biography</option>
+                            <option value="History">History</option>
+                            <option value="Self-Help">Self-Help</option>
+                            <option value="Textbook">Textbook</option>
+                            <option value="Other">Other</option>
                         </select>
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>

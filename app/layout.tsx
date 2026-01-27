@@ -36,6 +36,8 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import BottomNav from "@/components/BottomNav";
 
+import Header from "@/components/Header";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,19 +46,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 md:pb-0`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-16 md:pb-0 bg-background text-foreground`}
         suppressHydrationWarning
       >
         <AuthProvider>
           <PWAProvider>
-            <PageTransition>
-              {children}
-            </PageTransition>
-            <Suspense fallback={null}>
-              <BottomNav />
-            </Suspense>
-            <PWAInstallPrompt />
-            <ServiceWorkerRegister />
+            <div className="flex flex-col min-h-dvh">
+              <Header />
+              <main className="flex-grow pt-16">
+                <PageTransition>{children}</PageTransition>
+              </main>
+              <Suspense fallback={null}>
+                <BottomNav />
+              </Suspense>
+              <PWAInstallPrompt />
+              <ServiceWorkerRegister />
+            </div>
           </PWAProvider>
         </AuthProvider>
       </body>

@@ -7,7 +7,6 @@ import {
     User, 
     Settings, 
     HelpCircle, 
-    Info, 
     Shield, 
     FileText, 
     LogOut, 
@@ -15,7 +14,12 @@ import {
     Download, 
     Bell,
     MapPin,
-    Mail
+    Wallet,
+    ShoppingBag,
+    LayoutDashboard,
+    PlusCircle,
+    CreditCard,
+    Info
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,123 +42,180 @@ export default function AccountPage() {
     };
 
     if (loading || !user) {
-        return null;
+        return null; // Or a loading spinner
     }
 
-    const Section = ({ title, children }: { title: string, children: React.ReactNode }) => (
-        <div className="mb-6">
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-4">{title}</h3>
-            <div className="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                {children}
+    const DashboardCard = ({ title, icon: Icon, children, className = "" }: any) => (
+        <div className={`bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow ${className}`}>
+            <div className="flex items-center gap-2 mb-4">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <Icon size={18} />
+                </div>
+                <h3 className="font-semibold text-foreground">{title}</h3>
             </div>
+            {children}
         </div>
     );
 
-    const MenuItem = ({ icon: Icon, label, onClick, href, value, danger }: any) => {
+    const StatItem = ({ label, value, subtext }: any) => (
+        <div className="flex flex-col">
+            <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{label}</span>
+            <span className="text-2xl font-bold text-foreground mt-1">{value}</span>
+            {subtext && <span className="text-xs text-muted-foreground">{subtext}</span>}
+        </div>
+    );
+
+    const MenuLink = ({ icon: Icon, label, href, onClick, danger }: any) => {
         const content = (
-            <div className={`flex items-center justify-between p-4 hover:bg-gray-50 transition-colors cursor-pointer ${danger ? 'text-red-600' : 'text-gray-900'}`}>
+            <div className={`flex items-center justify-between py-3 px-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group ${danger ? 'text-red-500 hover:bg-red-50' : 'text-muted-foreground hover:text-foreground'}`}>
                 <div className="flex items-center gap-3">
-                    <Icon size={20} className={danger ? "text-red-500" : "text-gray-500"} />
-                    <span className="font-medium">{label}</span>
+                    <Icon size={18} className={`group-hover:scale-110 transition-transform ${danger ? "text-red-500" : "text-muted-foreground group-hover:text-primary"}`} />
+                    <span className="font-medium text-sm">{label}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    {value && <span className="text-sm text-gray-500">{value}</span>}
-                    {!danger && <ChevronRight size={16} className="text-gray-400" />}
-                </div>
+                <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
             </div>
         );
 
-        if (href) {
-            return (
-                <Link href={href} className="block border-b border-gray-100 last:border-0">
-                    {content}
-                </Link>
-            );
-        }
-
-        return (
-            <div onClick={onClick} className="border-b border-gray-100 last:border-0">
-                {content}
-            </div>
-        );
+        if (href) return <Link href={href} className="block">{content}</Link>;
+        return <div onClick={onClick}>{content}</div>;
     };
 
     return (
-        <div className="min-h-screen bg-gradient-main pb-24 md:pb-10 pt-20">
-
-            <div className="container mx-auto max-w-2xl pt-6 px-4 md:px-0">
-                {/* Profile Snippet */}
-                <div className="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl p-4 mb-6 flex items-center gap-4 shadow-sm">
-                    <div className="h-16 w-16 rounded-full bg-gray-100 relative overflow-hidden border border-gray-200">
-                        {user.photoURL ? (
-                            <Image src={user.photoURL} alt={user.displayName || "User"} fill className="object-cover" />
-                        ) : (
-                            <div className="flex items-center justify-center h-full text-xl font-bold text-gray-400">
-                                {user.displayName?.[0] || "U"}
-                            </div>
+        <div className="min-h-screen bg-muted/30 pb-24 md:pb-10 pt-20">
+            <div className="container mx-auto max-w-5xl px-4 md:px-6">
+                
+                {/* Header Section */}
+                <div className="flex flex-row items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 className="text-2xl md:text-3xl font-bold text-foreground">My Account</h1>
+                        <p className="text-muted-foreground hidden md:block">Manage your profile, listings, and settings.</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        {user.role === 'admin' && (
+                            <Link href="/admin" className="hidden md:block">
+                                <Button variant="outline" className="gap-2 border-yellow-500/20 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700">
+                                    <LayoutDashboard size={16} />
+                                    Admin Dashboard
+                                </Button>
+                            </Link>
                         )}
+                        <Button variant="outline" className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 gap-2" onClick={logout}>
+                            <LogOut size={16} />
+                            <span className="hidden sm:inline">Sign Out</span>
+                        </Button>
                     </div>
-                    <div className="flex-grow">
-                        <h2 className="font-bold text-lg text-gray-900">{user.displayName || "Book Lover"}</h2>
-                        <p className="text-sm text-gray-500">{user.email}</p>
-                    </div>
-                    <Button variant="outline" size="sm" onClick={() => router.push('/account/personal-details')} className="text-primary border-primary/20 hover:bg-primary/5">
-                        Edit
-                    </Button>
                 </div>
 
-                {user.role === 'admin' && (
-                    <div className="mb-6">
-                        <div 
-                            onClick={() => router.push('/admin')}
-                            className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:bg-primary/10 transition-colors"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                    <Shield size={20} className="text-primary" />
-                                </div>
-                                <div>
-                                    <span className="font-bold text-gray-900 block">Admin Dashboard</span>
-                                    <span className="text-xs text-primary font-medium">Manage App & Users</span>
+                {/* Main Grid Layout */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    {/* Column 1: Profile & Wallet */}
+                    <div className="space-y-6">
+                        {/* Profile Card */}
+                        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-primary/10 to-secondary/10 z-0"></div>
+                            <div className="h-24 w-24 rounded-full bg-background p-1 relative z-10 mb-3 shadow-sm">
+                                <div className="h-full w-full rounded-full bg-muted/20 relative overflow-hidden">
+                                    {user.photoURL ? (
+                                        <Image src={user.photoURL} alt={user.displayName || "User"} fill className="object-cover" />
+                                    ) : (
+                                        <div className="flex items-center justify-center h-full text-3xl font-bold text-muted-foreground">
+                                            {user.displayName?.[0] || "U"}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                            <ChevronRight size={18} className="text-primary/60" />
+                            <h2 className="font-bold text-xl text-foreground relative z-10">{user.displayName || "Book Lover"}</h2>
+                            <p className="text-sm text-muted-foreground mb-4 relative z-10">{user.email}</p>
+                            <div className="flex gap-2 w-full relative z-10">
+                                <Link href="/profile" className="flex-1">
+                                    <Button variant="outline" className="w-full rounded-full">View Profile</Button>
+                                </Link>
+                                <Link href="/account/personal-details" className="flex-1">
+                                    <Button variant="outline" className="w-full rounded-full">Edit Profile</Button>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Wallet Card */}
+                        <DashboardCard title="Wallet & Credits" icon={Wallet}>
+                            <div className="flex items-end justify-between mb-6">
+                                <StatItem label="Credits" value={user.credits || 0} subtext="Available to spend" />
+                                <Link href="/wallet">
+                                    <Button size="sm" className="rounded-full h-8 px-4">
+                                        <PlusCircle size={14} className="mr-1" /> Add
+                                    </Button>
+                                </Link>
+                            </div>
+                            <div className="space-y-1">
+                                <MenuLink icon={CreditCard} label="Payment Methods" href="/wallet/methods" />
+                                <MenuLink icon={FileText} label="Transaction History" href="/wallet/history" />
+                            </div>
+                        </DashboardCard>
+                    </div>
+
+                    {/* Column 2: Listings & Activity */}
+                    <div className="space-y-6">
+                        {/* Listings Stats */}
+                        <DashboardCard title="My Listings" icon={ShoppingBag}>
+                            <div className="grid grid-cols-2 gap-4 mb-6">
+                                <div className="bg-muted/30 p-3 rounded-xl text-center">
+                                    <span className="block text-2xl font-bold text-foreground">{user.booksListed || 0}</span>
+                                    <span className="text-xs text-muted-foreground font-medium">Active</span>
+                                </div>
+                                <div className="bg-muted/30 p-3 rounded-xl text-center">
+                                    <span className="block text-2xl font-bold text-foreground">{user.booksSold || 0}</span>
+                                    <span className="text-xs text-muted-foreground font-medium">Sold</span>
+                                </div>
+                            </div>
+                            <Link href="/sell">
+                                <Button className="w-full rounded-full mb-2">List a New Book</Button>
+                            </Link>
+                            <Link href="/listings">
+                                <Button variant="ghost" className="w-full rounded-full text-muted-foreground">Manage Listings</Button>
+                            </Link>
+                        </DashboardCard>
+
+                        {/* Exchanges */}
+                        <DashboardCard title="Exchanges" icon={ShoppingBag}>
+                             <div className="space-y-1">
+                                <MenuLink icon={ShoppingBag} label="Active Orders" href="/orders" />
+                                <MenuLink icon={ShoppingBag} label="Exchange Requests" href="/exchanges" />
+                                <MenuLink icon={FileText} label="Order History" href="/orders/history" />
+                            </div>
+                        </DashboardCard>
+                    </div>
+
+                    {/* Column 3: Settings & More */}
+                    <div className="space-y-6">
+                        {/* Settings */}
+                        <DashboardCard title="Settings" icon={Settings}>
+                            <div className="space-y-1">
+                                <MenuLink icon={MapPin} label="Saved Addresses" href="/account/addresses" />
+                                <MenuLink icon={Bell} label="Notifications" onClick={() => {}} />
+                                <MenuLink icon={Shield} label="Privacy & Security" href="/privacy" />
+                                {isInstallable && (
+                                    <MenuLink icon={Download} label="Install App" onClick={handleInstallClick} />
+                                )}
+                            </div>
+                        </DashboardCard>
+
+                        {/* Support */}
+                        <DashboardCard title="Support" icon={HelpCircle}>
+                            <div className="space-y-1">
+                                <MenuLink icon={HelpCircle} label="Help Center" href="/help" />
+                                <MenuLink icon={Info} label="About Us" href="/about" />
+                                <MenuLink icon={FileText} label="Terms of Service" href="/terms" />
+                            </div>
+                        </DashboardCard>
+
+                        <div className="text-center pt-4">
+                            <p className="text-xs text-muted-foreground">
+                                Version 1.0.0 • Build 2024.1
+                            </p>
                         </div>
                     </div>
-                )}
 
-                <Section title="Profile Information">
-                    <MenuItem icon={User} label="Personal Details" href="/account/personal-details" value="Name, Bio" />
-                    <MenuItem icon={MapPin} label="Saved Addresses" href="/account/addresses" value="Manage" />
-                </Section>
-
-                <Section title="App Settings">
-                    {isInstallable && (
-                        <MenuItem icon={Download} label="Install App" onClick={handleInstallClick} />
-                    )}
-                    <MenuItem icon={Bell} label="Notifications" onClick={() => {}} value="On" />
-                    <MenuItem icon={Settings} label="Preferences" onClick={() => {}} />
-                </Section>
-
-                <Section title="Support & Legal">
-                    <MenuItem icon={HelpCircle} label="Help & Support" href="/how-it-works" />
-                    <MenuItem icon={Info} label="About Us" href="/about" />
-                    <MenuItem icon={Shield} label="Privacy Policy" href="/privacy" />
-                    <MenuItem icon={FileText} label="Terms of Service" href="/terms" />
-                </Section>
-
-                <div className="px-4 md:px-0 mt-8">
-                    <Button 
-                        variant="outline" 
-                        className="w-full bg-white border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 h-12 text-base font-medium"
-                        onClick={logout}
-                    >
-                        <LogOut size={18} className="mr-2" />
-                        Sign Out
-                    </Button>
-                    <p className="text-center text-xs text-gray-400 mt-4">
-                        Version 1.0.0 • Build 2024.1
-                    </p>
                 </div>
             </div>
         </div>
