@@ -92,7 +92,7 @@ export default function AccountPage() {
                     </div>
                     <div className="flex items-center gap-3">
                         {user.role === 'admin' && (
-                            <Link href="/admin" className="hidden md:block">
+                            <Link href="/admin">
                                 <Button variant="outline" className="gap-2 border-yellow-500/20 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700">
                                     <LayoutDashboard size={16} />
                                     Admin Dashboard
@@ -111,6 +111,17 @@ export default function AccountPage() {
                     
                     {/* Column 1: Profile & Wallet */}
                     <div className="space-y-6">
+                        {/* Admin Card - Visible only to admins */}
+                        {user.role === 'admin' && (
+                            <DashboardCard title="Admin" icon={Shield} className="border-yellow-500/20 bg-yellow-50/50">
+                                <div className="space-y-1">
+                                    <MenuLink icon={LayoutDashboard} label="Admin Dashboard" href="/admin" />
+                                    <MenuLink icon={FileText} label="Manage Users" href="/admin/users" />
+                                    <MenuLink icon={Shield} label="Approvals" href="/admin/approvals" />
+                                </div>
+                            </DashboardCard>
+                        )}
+
                         {/* Profile Card */}
                         <div className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-primary/10 to-secondary/10 z-0"></div>
