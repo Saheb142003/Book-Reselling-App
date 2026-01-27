@@ -38,10 +38,10 @@ export default function BottomNav() {
       active: pathname === "/exchanges",
     },
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Account",
+      href: "/account",
       icon: Menu,
-      active: pathname === "/profile",
+      active: pathname === "/account",
     },
   ];
 
