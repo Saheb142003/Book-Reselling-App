@@ -33,12 +33,13 @@ export default function Hero() {
 
     return (
         <section className="relative min-h-[90dvh] flex items-center justify-center overflow-hidden pt-24 pb-10 md:pt-32 md:pb-20 bg-background">
-            {/* Blue/White Theme Background */}
+            {/* Professional Clean Background */}
+            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-background to-background opacity-80"></div>
             <div className="absolute inset-0 -z-10 bg-background">
-                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-400/10 blur-[100px] animate-pulse-slow"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-400/10 blur-[80px] animate-pulse-slow delay-1000"></div>
-                <div className="absolute top-[20%] right-[20%] w-[30%] h-[30%] rounded-full bg-amber-400/5 blur-[60px] animate-pulse-slow delay-500"></div>
-                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.02] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-slate-400/5 blur-[120px]"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-gray-400/5 blur-[100px]"></div>
+                <div className="absolute top-[20%] right-[20%] w-[30%] h-[30%] rounded-full bg-slate-300/10 blur-[80px]"></div>
+                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.015] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
             </div>
 
             <div className="container mx-auto px-4 md:px-6 text-center z-10 flex flex-col items-center">

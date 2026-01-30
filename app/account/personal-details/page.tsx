@@ -45,11 +45,15 @@ export default function PersonalDetailsPage() {
 
             // Upload Image if changed
             if (photoFile) {
-                const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
-                const { storage } = await import("@/lib/firebase");
-                const storageRef = ref(storage, `profile-pictures/${user.uid}`);
-                await uploadBytes(storageRef, photoFile);
-                newPhotoURL = await getDownloadURL(storageRef);
+                const { uploadToCloudinary } = await import("@/lib/cloudinary-client");
+                try {
+                    newPhotoURL = await uploadToCloudinary(photoFile, `book-exchange/profiles/${user.uid}`);
+                } catch (uploadError) {
+                    console.error("Profile image upload failed:", uploadError);
+                    alert("Failed to upload image. Please try again.");
+                    setIsSaving(false);
+                    return;
+                }
             }
 
             // Update Auth Profile

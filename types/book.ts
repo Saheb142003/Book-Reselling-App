@@ -5,8 +5,10 @@ export interface Book {
     title: string;
     authors: string[];
     description: string;
-    price?: number; // Deprecated, use credits
-    credits: number;
+    // Price related fields
+    price?: number; // Deprecated or used as 'credits' value
+    minPrice: number; // Minimum price accepted (in Rupees)
+    credits: number; // Listed price in Credits/Rupees
     condition: 'New' | 'Like New' | 'Good' | 'Fair' | 'Poor';
     genre?: string;
     coverUrl: string;

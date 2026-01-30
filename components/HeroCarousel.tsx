@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -30,16 +30,50 @@ const SLIDES = [
 
 export default function HeroCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const touchStartX = useRef<number | null>(null);
+    const touchEndX = useRef<number | null>(null);
 
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
         }, 5000);
         return () => clearInterval(timer);
-    }, []);
+    }, [currentIndex]);
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.targetTouches[0].clientX;
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        touchEndX.current = e.targetTouches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        if (!touchStartX.current || !touchEndX.current) return;
+
+        const distance = touchStartX.current - touchEndX.current;
+        const isLeftSwipe = distance > 50;
+        const isRightSwipe = distance < -50;
+
+        if (isLeftSwipe) {
+            setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
+        }
+
+        if (isRightSwipe) {
+            setCurrentIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+        }
+
+        touchStartX.current = null;
+        touchEndX.current = null;
+    };
 
     return (
-        <div className="relative w-full max-w-4xl mx-auto h-[400px] md:h-[500px] flex items-center justify-center mb-8">
+        <div 
+            className="relative w-full max-w-4xl mx-auto h-[400px] md:h-[500px] flex items-center justify-center mb-8"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+        >
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentIndex}

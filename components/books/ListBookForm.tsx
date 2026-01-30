@@ -5,8 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { addBook } from "@/lib/db/books";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "@/lib/firebase";
+import { uploadToCloudinary } from "@/lib/cloudinary-client";
 
 export default function ListBookForm() {
     const { user } = useAuth();
@@ -18,6 +17,9 @@ export default function ListBookForm() {
     const [description, setDescription] = useState("");
     const [condition, setCondition] = useState("Good");
     const [genre, setGenre] = useState("Fiction");
+
+    const [minPrice, setMinPrice] = useState("0");
+    const [price, setPrice] = useState(""); // Replaces 'credits' as the main price input
 
     // Changing coverUrl string to file state
     const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -45,9 +47,13 @@ export default function ListBookForm() {
 
             // Upload Image if selected
             if (coverFile) {
-                const storageRef = ref(storage, `book-covers/${user.uid}/${Date.now()}_${coverFile.name}`);
-                await uploadBytes(storageRef, coverFile);
-                finalCoverUrl = await getDownloadURL(storageRef);
+                // Use Cloudinary with a structured folder
+                try {
+                    finalCoverUrl = await uploadToCloudinary(coverFile, `book-exchange/users/${user.uid}`);
+                } catch (uploadError) {
+                    console.error("Image upload failed:", uploadError);
+                    throw new Error("Failed to upload image. Please try again.");
+                }
             }
 
             await addBook({
@@ -56,8 +62,9 @@ export default function ListBookForm() {
                 title,
                 authors: [author], // Simple array for now
                 description,
-                credits: 0, // Admin assigns credits
-                price: 0, // Deprecated
+                credits: Number(price) || 0, // Using 'credits' field to store the asking Price
+                minPrice: Number(minPrice) || 0,
+                price: Number(price) || 0,
                 condition: condition as any,
                 genre,
                 coverUrl: finalCoverUrl || "https://placehold.co/400x600?text=No+Cover", // Default
@@ -70,7 +77,7 @@ export default function ListBookForm() {
             router.refresh(); // Update profile counts
         } catch (err: any) {
             console.error(err);
-            setError("Failed to list book. Please try again.");
+            setError(err.message || "Failed to list book. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -124,6 +131,40 @@ export default function ListBookForm() {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Briefly describe the book..."
                 />
+            </div>
+
+            {/* Price Configuration */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-primary/5 rounded-xl border border-primary/10">
+                <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium ml-1 text-foreground">Selling Price (₹)</label>
+                    <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
+                        <input
+                            type="number"
+                            required
+                            min="0"
+                            className="w-full bg-white border border-gray-200 rounded-xl p-3 pl-8 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground placeholder:text-gray-400 transition-all"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                            placeholder="299"
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium ml-1 text-foreground">Minimum Acceptable Price (₹)</label>
+                    <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
+                        <input
+                            type="number"
+                            min="0"
+                            className="w-full bg-white border border-gray-200 rounded-xl p-3 pl-8 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground placeholder:text-gray-400 transition-all"
+                            value={minPrice}
+                            onChange={(e) => setMinPrice(e.target.value)}
+                            placeholder="Optional"
+                        />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground ml-1">Lowest price you'd accept in a negotiation.</p>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -67,7 +67,7 @@ export default function Header() {
         { name: 'Sell', href: '/sell', icon: PlusCircle },
     ];
 
-    if (pathname?.startsWith('/admin')) return null;
+    // if (pathname?.startsWith('/admin')) return null; // Enabled Header for Admin Pages
 
     return (
         <header 
@@ -179,8 +179,8 @@ export default function Header() {
                                                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
                                                 onClick={() => setIsDropdownOpen(false)}
                                             >
-                                                <ShoppingBag size={16} />
-                                                My Exchanges
+                                                <LayoutDashboard size={16} />
+                                                Dashboard
                                             </Link>
                                             <Link
                                                 href="/wallet"
