@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Home, Compass, LayoutDashboard, Menu } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useState, useEffect } from "react";
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -45,7 +46,13 @@ export default function BottomNav() {
     },
   ];
 
-  if (!user) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !user) return null;
   
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border md:hidden pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">

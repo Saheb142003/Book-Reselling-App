@@ -1,10 +1,8 @@
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function HowItWorksPage() {
     return (
         <div className="min-h-screen bg-gradient-main flex flex-col">
-            <Header />
             <main className="flex-grow pt-32 pb-10 px-4 container mx-auto text-center">
                 <h1 className="text-4xl font-bold mb-6">How it Works</h1>
                 <p className="max-w-2xl mx-auto text-muted-foreground text-lg mb-12">

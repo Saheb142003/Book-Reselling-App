@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { getPendingBooks, getAllBooks, getAdminStats, getAdminTransactions, approveBook, rejectBook, getUsers, updateUserRole } from "@/lib/db/admin";
 import { Book } from "@/types/book";
-import Header from "@/components/Header";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -144,7 +143,6 @@ export default function AdminDashboard() {
     if (loading || isLoadingData) {
         return (
             <div className="min-h-screen bg-background flex flex-col">
-                <Header />
                 <div className="flex-grow flex items-center justify-center pt-32">
                     <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
                 </div>
@@ -156,8 +154,7 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-muted/30 flex flex-col pb-24">
-            <Header />
-            <main className="flex-grow pt-24 px-4 container mx-auto max-w-5xl">
+            <main className="flex-grow pt-24 px-4 container mx-auto max-w-6xl">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div>
                         <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>

@@ -91,15 +91,11 @@ export default function AccountPage() {
                         <p className="text-muted-foreground hidden md:block">Manage your profile, listings, and settings.</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        {user.role === 'admin' && (
-                            <Link href="/admin">
-                                <Button variant="outline" className="gap-2 border-yellow-500/20 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700">
-                                    <LayoutDashboard size={16} />
-                                    Admin Dashboard
-                                </Button>
-                            </Link>
-                        )}
-                        <Button variant="outline" className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 gap-2" onClick={logout}>
+                        <Button 
+                            variant="ghost" 
+                            className="bg-red-500 hover:bg-red-600 text-white gap-2 px-4 shadow-sm hover:shadow-md transition-all" 
+                            onClick={logout}
+                        >
                             <LogOut size={16} />
                             <span className="hidden sm:inline">Sign Out</span>
                         </Button>

@@ -6,6 +6,7 @@ import { Download, Search, BookOpen, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { usePWA } from '@/context/PWAContext';
 import { useRouter } from 'next/navigation';
+import HeroCarousel from './HeroCarousel';
 
 export default function Hero() {
     const { isInstallable, promptInstall } = usePWA();
@@ -42,15 +43,7 @@ export default function Hero() {
 
             <div className="container mx-auto px-4 md:px-6 text-center z-10 flex flex-col items-center">
                 
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 max-w-4xl">
-                    Book Exchange <br className="hidden md:block" />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">New Life</span>
-                </h1>
-
-                <p className="max-w-xl mx-auto text-base md:text-lg text-muted-foreground mb-8 leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
-                    Join thousands of readers trading books effortlessly. 
-                    Sustainable, fast, and community-driven.
-                </p>
+                <HeroCarousel />
 
                 {/* Search Bar */}
                 <div className="w-full max-w-md mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">

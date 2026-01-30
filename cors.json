@@ -1,7 +1,7 @@
 [
   {
-    "origin": ["*"],
-    "method": ["GET", "HEAD", "PUT", "POST", "DELETE", "OPTIONS"],
+    "origin": ["http://localhost:3000", "https://bookexchange-188db.web.app", "https://bookexchange-188db.firebaseapp.com"],
+    "method": ["GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS"],
     "responseHeader": ["Content-Type", "Access-Control-Allow-Origin", "Authorization", "Content-Length", "User-Agent", "x-goog-resumable"],
     "maxAgeSeconds": 3600
   }

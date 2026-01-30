@@ -1,9 +1,8 @@
-import Header from "@/components/Header";
+
 
 export default function TermsPage() {
     return (
         <div className="min-h-screen bg-white">
-            <Header />
             <main className="container mx-auto px-4 pt-32 pb-20 max-w-3xl">
                 <h1 className="text-3xl font-bold mb-8 text-gray-900">Terms of Service</h1>
                 

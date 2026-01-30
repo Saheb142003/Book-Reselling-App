@@ -53,7 +53,7 @@ export default function RootLayout({
           <PWAProvider>
             <div className="flex flex-col min-h-dvh">
               <Header />
-              <main className="flex-grow pt-16">
+              <main className="flex-grow">
                 <PageTransition>{children}</PageTransition>
               </main>
               <Suspense fallback={null}>

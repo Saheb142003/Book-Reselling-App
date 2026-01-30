@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import Header from "@/components/Header";
 
 const NAV_ORDER = ["/", "/browse", "/exchanges", "/account"];
 
@@ -88,7 +87,6 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
   return (
     <>
-      {!isAdminPage && <Header />}
       <div 
         className="flex-grow flex flex-col overflow-hidden relative"
         onTouchStart={handleTouchStart}
