@@ -2,11 +2,12 @@
 
 import { Button } from './ui/Button';
 import { useEffect, useState } from 'react';
-import { Download, Search, BookOpen, Sparkles } from 'lucide-react';
+import ValuePropositionCarousel from './ValuePropositionCarousel';
+import { Download, Search, BookOpen, Sparkles, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePWA } from '@/context/PWAContext';
 import { useRouter } from 'next/navigation';
-import HeroCarousel from './HeroCarousel';
+
 
 export default function Hero() {
     const { isInstallable, promptInstall } = usePWA();
@@ -24,15 +25,15 @@ export default function Hero() {
         }
     };
 
-    const QUICK_GENRES = [
-        { name: "Fiction", color: "bg-blue-100 text-blue-700 border-blue-200" },
-        { name: "Textbook", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-        { name: "Sci-Fi", color: "bg-purple-100 text-purple-700 border-purple-200" },
-        { name: "Mystery", color: "bg-amber-100 text-amber-700 border-amber-200" },
+    const FEATURED_CATEGORIES = [
+        { name: "Engineering", icon: "⚙️", desc: "Textbooks & Manuals" },
+        { name: "Medical", icon: "🩺", desc: "Anatomy & Guides" },
+        { name: "Fiction", icon: "📚", desc: "Bestsellers & Classics" },
+        { name: "Competitive", icon: "🎯", desc: "Exam Prep" },
     ];
 
     return (
-        <section className="relative min-h-[90dvh] flex items-center justify-center overflow-hidden pt-24 pb-10 md:pt-32 md:pb-20 bg-background">
+        <section className="relative min-h-[90dvh] flex items-center justify-center overflow-hidden pt-24 pb-16 md:pt-32 md:pb-24 bg-background">
             {/* Professional Clean Background */}
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-background to-background opacity-80"></div>
             <div className="absolute inset-0 -z-10 bg-background">
@@ -42,59 +43,74 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.015] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
             </div>
 
-            <div className="container mx-auto px-4 md:px-6 text-center z-10 flex flex-col items-center">
+            <div className="container mx-auto px-4 md:px-6 z-10 flex flex-col items-center max-w-5xl">
                 
-                <HeroCarousel />
+                {/* 1. Value Proposition (Replaces Carousel) */}
+                {/* 1. Value Proposition (Replaces Carousel) */}
+                <ValuePropositionCarousel />
 
-                {/* Search Bar */}
-                <div className="w-full max-w-md mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
-                    <form onSubmit={handleSearch} className="relative group">
-                        <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="relative flex items-center bg-card border border-border rounded-full shadow-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
-                            <Search className="ml-4 text-muted-foreground" size={20} />
+                {/* 2. Enhanced Search Bar - Functional Utility */}
+                <div className="w-full max-w-2xl mb-12 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
+                    <form onSubmit={handleSearch} className="relative group w-full">
+                        <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="relative flex items-center bg-card border border-border shadow-xl shadow-primary/10 rounded-full overflow-hidden p-1.5 transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary">
+                            <div className="pl-4 text-muted-foreground">
+                                <Search size={20} />
+                            </div>
                             <input 
                                 type="text" 
-                                placeholder="Search for a book..." 
-                                className="w-full py-3 px-3 bg-transparent focus:outline-none text-foreground placeholder:text-muted-foreground"
+                                placeholder="Search by title, author, or ISBN..." 
+                                className="w-full py-3 px-3 bg-transparent focus:outline-none text-foreground placeholder:text-muted-foreground/70 text-base"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <Button type="submit" size="sm" className="mr-1 rounded-full px-6">
-                                Search
+                            {searchQuery && (
+                                <button 
+                                    type="button"
+                                    onClick={() => setSearchQuery("")}
+                                    className="p-2 mr-1 text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                    <X size={16} />
+                                </button>
+                            )}
+                            <Button 
+                                type="submit" 
+                                size="sm" 
+                                className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-primary text-primary-foreground shadow-sm shrink-0"
+                            >
+                                <Search size={20} />
                             </Button>
                         </div>
                     </form>
+                    <div className="flex justify-center gap-4 mt-3 text-xs text-muted-foreground">
+                        <span>Popular:</span>
+                        <button onClick={() => router.push('/explore?q=Engineering')} className="hover:text-primary transition-colors hover:underline">Engineering</button>
+                        <button onClick={() => router.push('/explore?q=Medical')} className="hover:text-primary transition-colors hover:underline">Medical</button>
+                        <button onClick={() => router.push('/explore?q=Fiction')} className="hover:text-primary transition-colors hover:underline">Fiction</button>
+                    </div>
                 </div>
 
-                {/* Quick Genre Chips */}
-                <div className="flex flex-wrap justify-center gap-2 mb-10 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-400">
-                    {QUICK_GENRES.map((genre) => (
-                        <Link key={genre.name} href={`/explore?genre=${genre.name}`}>
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${genre.color} hover:opacity-80 transition-opacity cursor-pointer`}>
-                                {genre.name}
-                            </span>
+                {/* 3. Browse Categories Grid - Fills "Empty" Space with Utility */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mb-12 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
+                    {FEATURED_CATEGORIES.map((cat) => (
+                        <Link key={cat.name} href={`/explore?genre=${cat.name}`} className="group">
+                            <div className="h-full bg-card hover:bg-muted/50 border border-border rounded-xl p-4 flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/20 cursor-pointer">
+                                <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">{cat.icon}</span>
+                                <h3 className="font-semibold text-foreground">{cat.name}</h3>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-wide mt-1">{cat.desc}</p>
+                            </div>
                         </Link>
                     ))}
-                    <Link href="/explore">
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-muted text-muted-foreground border border-border hover:bg-muted/80 transition-colors cursor-pointer flex items-center gap-1">
-                            View All <BookOpen size={10} />
-                        </span>
-                    </Link>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-500 w-full sm:w-auto">
-                    <Link href="/sell" className="w-full sm:w-auto">
-                        <Button size="lg" className="w-full sm:w-auto min-w-[160px] h-12 text-base font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:scale-105 bg-primary text-primary-foreground hover:bg-primary/90">
-                            Start Exchanging
-                        </Button>
-                    </Link>
-                    
+                {/* 4. Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-400 w-full sm:w-auto mb-16">
                     {isInstallable && (
                         <Button 
                             onClick={handleInstallClick}
                             variant="secondary" 
                             size="lg" 
-                            className="w-full sm:w-auto min-w-[160px] h-12 gap-2 bg-success text-white hover:bg-success/90 border-success shadow-lg shadow-success/20 animate-pulse-subtle"
+                            className="w-full sm:w-auto min-w-[180px] h-14 gap-2 bg-card text-foreground border border-border hover:bg-muted hover:border-muted-foreground/30 shadow-sm transition-all hover:scale-[1.02] rounded-xl"
                         >
                             <Download size={18} />
                             Install App
@@ -102,17 +118,17 @@ export default function Hero() {
                     )}
                 </div>
 
-                {/* Stats */}
-                <div className="mt-16 w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 border-t border-border pt-10 animate-in fade-in duration-1000 delay-700">
+                {/* 5. Stats Section (Refined) */}
+                <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 border-t border-border pt-10 animate-in fade-in duration-1000 delay-500">
                     {[
-                        { label: 'Active Readers', value: '10K+' },
-                        { label: 'Books Exchanged', value: '50K+' },
-                        { label: 'Trees Saved', value: '100+' },
-                        { label: 'Rating', value: '4.9/5' },
+                        { label: 'Active Learners', value: '12K+' },
+                        { label: 'Books Listed', value: '85K+' },
+                        { label: 'Money Saved', value: '₹50L+' },
+                        { label: 'Community Rating', value: '4.9/5' },
                     ].map((stat, i) => (
-                        <div key={i} className="flex flex-col gap-1 p-4 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
-                            <span className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</span>
-                            <span className="text-xs md:text-sm text-muted-foreground uppercase tracking-wider">{stat.label}</span>
+                        <div key={i} className="flex flex-col items-center justify-center p-4">
+                            <span className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">{stat.value}</span>
+                            <span className="text-xs md:text-sm text-muted-foreground font-medium uppercase tracking-wider mt-1">{stat.label}</span>
                         </div>
                     ))}
                 </div>

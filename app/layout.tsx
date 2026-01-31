@@ -37,6 +37,7 @@ import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import BottomNav from "@/components/BottomNav";
 
 import Header from "@/components/Header";
+import FloatingActionButton from "@/components/FloatingActionButton";
 
 export default function RootLayout({
   children,
@@ -61,6 +62,7 @@ export default function RootLayout({
               </Suspense>
               <PWAInstallPrompt />
               <ServiceWorkerRegister />
+              <FloatingActionButton />
             </div>
           </PWAProvider>
         </AuthProvider>

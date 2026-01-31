@@ -60,33 +60,43 @@ function ExploreContent() {
     return (
         <div className="container mx-auto px-4 md:px-6">
             
-            {/* Header & Search */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            {/* Header & Actions */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Explore Books</h1>
-                    <p className="text-muted-foreground">
-                        Discover {books.length > 0 ? books.length : "thousands of"} pre-loved books looking for a new home.
-                    </p>
+                    <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-1">Explore Books</h1>
+                    <p className="text-muted-foreground text-sm">Discover books from the community.</p>
                 </div>
+            </div>
 
-                <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
-                    <div className="relative w-full sm:w-80">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            {/* Enhanced Search Bar */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
+                <div className="relative w-full max-w-2xl group mx-auto">
+                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="relative flex items-center bg-card border border-border shadow-xl shadow-primary/10 rounded-full overflow-hidden p-1.5 transition-all focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary">
+                        <div className="pl-4 text-muted-foreground">
+                            <Search size={20} />
+                        </div>
                         <input 
                             type="text" 
-                            placeholder="Search by title or author..." 
-                            className="w-full h-10 pl-9 pr-4 rounded-full border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+                            placeholder="Search by title, author, or ISBN..." 
+                            className="w-full py-3 px-3 bg-transparent focus:outline-none text-foreground placeholder:text-muted-foreground/70 text-base"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                         {searchQuery && (
                             <button 
                                 onClick={() => setSearchQuery("")}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                className="p-2 mr-1 text-muted-foreground hover:text-foreground transition-colors"
                             >
-                                <X size={14} />
+                                <X size={16} />
                             </button>
                         )}
+                        <Button 
+                            size="sm" 
+                            className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-primary text-primary-foreground shadow-sm shrink-0"
+                        >
+                            <Search size={20} />
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -132,13 +142,10 @@ function ExploreContent() {
                     <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                         We couldn't find any books matching your search. Try adjusting your filters or search terms.
                     </p>
-                    <div className="flex gap-3">
+                    <div className="flex justify-center">
                         <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedGenre("All"); }}>
                             Clear Filters
                         </Button>
-                        <Link href="/sell">
-                            <Button>List a Book</Button>
-                        </Link>
                     </div>
                 </div>
             )}

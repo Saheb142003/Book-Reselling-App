@@ -14,11 +14,9 @@ import {
     Download, 
     Bell,
     MapPin,
-    Wallet,
     ShoppingBag,
     LayoutDashboard,
     PlusCircle,
-    CreditCard,
     Info
 } from "lucide-react";
 import Image from "next/image";
@@ -144,21 +142,7 @@ export default function AccountPage() {
                             </div>
                         </div>
 
-                        {/* Wallet Card */}
-                        <DashboardCard title="Wallet & Credits" icon={Wallet}>
-                            <div className="flex items-end justify-between mb-6">
-                                <StatItem label="Credits" value={user.credits || 0} subtext="Available to spend" />
-                                <Link href="/wallet">
-                                    <Button size="sm" className="rounded-full h-8 px-4">
-                                        <PlusCircle size={14} className="mr-1" /> Add
-                                    </Button>
-                                </Link>
-                            </div>
-                            <div className="space-y-1">
-                                <MenuLink icon={CreditCard} label="Payment Methods" href="/wallet/methods" />
-                                <MenuLink icon={FileText} label="Transaction History" href="/wallet/history" />
-                            </div>
-                        </DashboardCard>
+
                     </div>
 
                     {/* Column 2: Listings & Activity */}
@@ -175,20 +159,18 @@ export default function AccountPage() {
                                     <span className="text-xs text-muted-foreground font-medium">Sold</span>
                                 </div>
                             </div>
-                            <Link href="/sell">
-                                <Button className="w-full rounded-full mb-2">List a New Book</Button>
-                            </Link>
-                            <Link href="/listings">
-                                <Button variant="ghost" className="w-full rounded-full text-muted-foreground">Manage Listings</Button>
+
+                            <Link href="/exchanges?tab=listings">
+                                <Button variant="outline" className="w-full rounded-full">Manage Listings</Button>
                             </Link>
                         </DashboardCard>
 
                         {/* Exchanges */}
                         <DashboardCard title="Exchanges" icon={ShoppingBag}>
                              <div className="space-y-1">
-                                <MenuLink icon={ShoppingBag} label="Active Orders" href="/orders" />
-                                <MenuLink icon={ShoppingBag} label="Exchange Requests" href="/exchanges" />
-                                <MenuLink icon={FileText} label="Order History" href="/orders/history" />
+                                <MenuLink icon={ShoppingBag} label="Active Orders" href="/exchanges?tab=purchases" />
+                                <MenuLink icon={ShoppingBag} label="Exchange Requests" href="/exchanges?tab=requests" />
+                                <MenuLink icon={FileText} label="Order History" href="/exchanges?tab=sold" />
                             </div>
                         </DashboardCard>
                     </div>
