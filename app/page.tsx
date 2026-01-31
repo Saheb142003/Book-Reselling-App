@@ -18,8 +18,8 @@ export default function Home() {
     async function fetchRecentBooks() {
       try {
         const books = await getBooks();
-        // Sort by createdAt desc if available, otherwise take first 4
-        setRecentBooks(books.slice(0, 4));
+        // Sort by createdAt desc if available, otherwise take first 5
+        setRecentBooks(books.slice(0, 5));
       } catch (error) {
         console.error("Failed to fetch recent books", error);
       } finally {
@@ -55,10 +55,25 @@ export default function Home() {
                 ))}
             </div>
           ) : recentBooks.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="flex overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:-mx-6 md:px-6 gap-4 md:gap-6 hide-scrollbar">
               {recentBooks.map((book) => (
-                <BookCard key={book.id} book={book} />
+                <div key={book.id} className="snap-start shrink-0 w-[160px] md:w-[220px]">
+                  <BookCard book={book} />
+                </div>
               ))}
+              
+              {/* Explore More Card */}
+              <div className="snap-start shrink-0 w-[160px] md:w-[220px]">
+                <Link href="/explore" className="h-full block">
+                    <div className="h-full min-h-[300px] bg-muted/30 border-2 border-dashed border-primary/20 hover:border-primary/50 hover:bg-muted/50 rounded-2xl flex flex-col items-center justify-center p-6 text-center transition-all group cursor-pointer">
+                        <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <ArrowRight className="text-primary" size={32} />
+                        </div>
+                        <h3 className="font-bold text-lg text-foreground mb-1">Explore More</h3>
+                        <p className="text-xs text-muted-foreground">Discover thousands of books</p>
+                    </div>
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="text-center py-12 bg-muted/10 rounded-2xl border border-dashed border-border">

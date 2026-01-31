@@ -8,9 +8,9 @@ export default function LoginPage() {
             <main className="flex-grow flex items-center justify-center pt-24 pb-10 px-4">
                 <div className="w-full max-w-md">
                     <LoginForm />
-                    <p className="text-center text-muted-foreground mt-6 text-sm">
+                    <p className="text-center text-gray-800 dark:text-gray-200 mt-6 text-sm font-medium">
                         Don't have an account?{" "}
-                        <Link href="/signup" className="text-primary hover:underline">
+                        <Link href="/signup" className="text-primary font-bold hover:underline hover:text-primary/80 transition-colors">
                             Sign up
                         </Link>
                     </p>

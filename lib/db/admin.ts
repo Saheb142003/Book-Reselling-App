@@ -58,8 +58,7 @@ export async function approveBook(bookId: string, sellerId: string, creditAmount
             const newListedCount = (userDoc.data().booksListed || 0) + 1;
 
             transaction.update(userRef, {
-                credits: newCredits,
-                booksListed: newListedCount
+                credits: newCredits
             });
         });
     } catch (error) {
