@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Ultra-Clean Modern Minimalist Theme (Shadcn Style) */
+  --background: #ffffff;
+  --foreground: #09090b;
+
+  --primary: #18181b; /* Dark Slate/Charcoal */
+  --primary-foreground: #fafafa;
+
+  --secondary: #f4f4f5; /* Light gray */
+  --secondary-foreground: #18181b;
+
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+
+  --card: #ffffff;
+  --card-foreground: #09090b;
+
+  --border: #e4e4e7;
+  --input: #ffffff;
+  --ring: #18181b;
+
+  --success: #16a34a;
+  --error: #dc2626;
+
+  --font-sans: system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  height: 100%;
+}
+
+/* Simple border-based cards */
+.glass {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.glass-nav {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+/* Text & BG styles - Clean & solid, no gradients */
+.text-gradient {
+  color: var(--foreground);
+}
+
+.bg-gradient-main {
+  background: var(--background);
+}
