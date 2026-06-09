@@ -1,5 +1,7 @@
 # 📚 Book Reselling & Exchange Platform (MERN Stack)
 
+**Live Demo (Frontend):** [https://bookreselling.netlify.app](https://bookreselling.netlify.app)
+
 This README serves as a comprehensive, end-to-end guide of the Book Reselling & Exchange Platform. By reading this document, any developer, product manager, or architect can understand and explain the complete system architecture, data models, directory structure, API endpoint definitions, and core system workflows.
 
 ---
@@ -162,25 +164,40 @@ Audit trail logs displaying wallet history.
 ## 🔄 Core System Workflows
 
 ### 1. Book Reselling & Circular Economy
+
+The platform features a fully-automated, zero-friction **Circular Economy Resell** loop. When a user buys a book, it doesn't get stuck in a silo; they can instantly list it back on the marketplace with a custom price while preserving verified metadata.
+
+```mermaid
+graph TD
+    A["🛒 1. User Purchases Book"] -->|Exchange Completed| B["🗂️ 2. Stored in User Profile ('Purchased Books' Tab)"]
+    B -->|Click 'Resell Book'| C["🔄 3. Redirected to /sell?reimportId=BOOK_ID"]
+    C -->|API Request| D["📥 4. ListBookForm Fetches Original Verified Metadata"]
+    D -->|Prefills| E["✍️ 5. Auto-fills Title, Authors, Description, Genre, Cover URL"]
+    E -->|User Input| F["💰 6. Seller Customizes Price & Condition"]
+    F -->|Submit Form| G["🚀 7. POST Request to /api/books (with resoldFromBookId)"]
+    G --> H["⚙️ 8. Backend Engine Processes Listing"]
+    
+    H --> H1["🔒 8.1 Marks original book status as 'resold' (removes from owner's purchased library)"]
+    H --> H2["⚡ 8.2 Bypasses Admin Approval Queue (instantly sets approvalStatus: 'approved')"]
+    H --> H3["📚 8.3 Injects new verified listing into the 'Explore' marketplace"]
+    
+    style A fill:#4F46E5,stroke:#312E81,stroke-width:2px,color:#fff
+    style B fill:#3B82F6,stroke:#1D4ED8,stroke-width:2px,color:#fff
+    style D fill:#8B5CF6,stroke:#6D28D9,stroke-width:2px,color:#fff
+    style G fill:#10B981,stroke:#065F46,stroke-width:2px,color:#fff
+    style H2 fill:#F59E0B,stroke:#92400E,stroke-width:2px,color:#fff
+    style H3 fill:#10B981,stroke:#065F46,stroke-width:2px,color:#fff
 ```
-  [User Purchases Book]
-          │
-          ▼
-  [Stored in User Profile -> "Purchased Books" Tab]
-          │
-          ▼ (User clicks "Resell Book")
-  [Redirect to /sell?reimportId=...]
-          │
-          ▼ (ListBookForm fetches original metadata)
-  [Prefills Title, Authors, Description, Cover Image]
-          │
-          ▼ (User modifies Price/Condition and submits)
-  [Post to POST /api/books]
-          │
-          ├─► 1. Marks original book status as 'resold' (hidden from Purchased tab)
-          ├─► 2. Bypasses Admin approval (instantly sets approvalStatus: 'approved')
-          └─► 3. Awards credits and increments listing count for the seller
-```
+
+#### Step-by-Step Execution Lifecycle:
+1. **Purchase Completion**: When a trade request is approved, ownership of the `Book` record is transferred, and the transaction is logged in the `Exchange` history.
+2. **The Purchased Collection**: The user's account dashboard queries all completed exchanges where the user was the buyer. These display under the **"Purchased Books"** tab.
+3. **Resell Initialization**: The "Resell" trigger points the client route to `/sell` with the query parameter `reimportId=...`.
+4. **Metadata Auto-Import**: The listing form calls `GET /api/books/:id` using the `reimportId`. It fetches the original cover images, authors, descriptions, and ISBN numbers, eliminating manual entry.
+5. **Auto-Approval Bypass Logic**: In `POST /api/books`, when `resoldFromBookId` is provided:
+   * The server runs a database mutation to set the original book's `status` to `'resold'` so it cannot be double-re-listed.
+   * It skips the default `'pending'` moderation state and flags the new listing as `'approved'` automatically (since the book's metadata has already been reviewed in its initial listing).
+
 
 ### 2. Transaction Payouts & The 5% Platform Cut
 When an exchange request is **Accepted** by a seller, the backend applies the transaction fee logic:
