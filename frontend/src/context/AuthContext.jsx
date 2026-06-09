@@ -1,8 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
-// Configure axios default base URL from environment
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// Configure axios default base URL from environment (safely handles missing /api suffix)
+let apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+if (apiUrl && !apiUrl.endsWith("/api") && !apiUrl.endsWith("/api/")) {
+  apiUrl = apiUrl.replace(/\/$/, "") + "/api";
+}
+axios.defaults.baseURL = apiUrl;
 
 const AuthContext = createContext({
   user: null,
